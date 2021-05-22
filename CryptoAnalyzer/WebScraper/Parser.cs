@@ -1,5 +1,6 @@
 ﻿using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
+using System;
 using System.Threading.Tasks;
 
 namespace WebScraper
@@ -24,14 +25,14 @@ namespace WebScraper
                     "tbody" != page.Body.Children[0].Children[1].Children[5].Children[0].Children[0].Children[1].Children[0].Children[1].LocalName
                     )
                 {
-                    //fix Warn about exception and stop program
+                    new Exception(); //fix temp. Warn about exception and stop program
                 }
 
                 transactionsTable = page.Body.Children[0].Children[1].Children[5].Children[0].Children[0].Children[1].Children[0].Children[1];
             }
             catch
             {
-                //fix Warn about exception and stop program
+                new Exception(); //fix temp. Warn about exception and stop program
             }
 
             return transactionsTable;
@@ -45,7 +46,7 @@ namespace WebScraper
                     "has-tag text-truncate" != row.Children[1].Children[0].ClassName
                     )
                 {
-                    //fix Warn about exception and stop program
+                    new Exception(); //fix temp. Warn about exception and stop program
                 }
 
 
@@ -60,7 +61,7 @@ namespace WebScraper
             }
             catch
             {
-                //fix Warn about exception and stop program
+                new Exception(); //fix temp. Warn about exception and stop program
             }
         }
 
