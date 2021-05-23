@@ -51,7 +51,6 @@ namespace WebScraper
                     new Exception(); //fix temp. Warn about exception and stop program
                 }
 
-
                 var pathCryptoInfo = ((IHtmlAnchorElement)row.Children[8].Children[0]).PathName;
                 var pageCryptoInfo = await new TempName().GetIHtmlDoc(_domainUrl + pathCryptoInfo);
                 var cryptoInfo = ParseCryptoInfo(pageCryptoInfo);
@@ -76,12 +75,35 @@ namespace WebScraper
                 .Where(x => x.ParentElement.ClassName == "media-body")
                 .Where(x => x.ParentElement.TextContent.Contains("Token"));
 
+            token.Token = tokenHtmlEl.First().TextContent;
+            token.Known = ParseCryptoImgSrc(tokenHtmlEl.First()) != _unknownTokenImg;
+
             if (tokenHtmlEl.Count() != 1)
             {
                 new Exception(); //fix temp. Warn about exception and stop program
             }
 
-            return null; // temp
+            return token;
+        }
+
+        private string ParseCryptoImgSrc(IElement tokenHtmlEl)
+        {
+            var imageOuterHtml = tokenHtmlEl.ParentElement.ParentElement.Children
+                .Where(x => x.LocalName == "img")
+                .Where(x => x.ClassName == "u-sm-avatar mr-2")
+                .Select(x => x.OuterHtml);
+
+
+            var srcStart = imageOuterHtml.First().IndexOf("src=\"") + "src=\"".Length;
+            var srcEnd = imageOuterHtml.First().Substring(srcStart).IndexOf("\"");
+
+
+            if (imageOuterHtml.Count() != 1)
+            {
+                new Exception(); //fix temp. Warn about exception and stop program
+            }
+
+            return imageOuterHtml.First().Substring(srcStart, srcEnd);
         }
     }
 }
