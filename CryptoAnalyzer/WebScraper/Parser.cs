@@ -1,6 +1,7 @@
 ﻿using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace WebScraper
@@ -8,6 +9,7 @@ namespace WebScraper
     public class Parser
     {
         private const string _domainUrl = "https://bscscan.com"; //fix temp put into config file
+        private const string _unknownTokenImg = "/images/main/empty-token.png";
 
         public IElement ParseTxnTable(IHtmlDocument page)
         {
@@ -67,17 +69,19 @@ namespace WebScraper
 
         private CryptoInfo ParseCryptoInfo(IHtmlDocument page)
         {
+            var token = new CryptoInfo();
 
-            //var imageSrc = pageCryptoInfo.All
-            //    .Where(x => "body" == x.LocalName)
-            //    .Where(x => "div" == x.LocalName && "wrapper" == x.ClassName)
-            //    .Where(x => "main" == x.LocalName && "content" == x.Id)
-            //    .Where(x => "div" == x.LocalName && "container py-3" == x.ClassName)
-            //    .Where(x => "div" == x.LocalName && "d-lg-flex align-items-center" == x.ClassName)
-            //    .Where(x => "div" == x.LocalName && "mb-3 mb-lg-0" == x.ClassName)
-            //    .Where(x => "h1" == x.LocalName && "h4 media align-items-center text-dark" == x.ClassName);
+            var tokenHtmlEl = page.All
+                .Where(x => x.LocalName == "span" && x.ClassName == "text-secondary small")
+                .Where(x => x.ParentElement.ClassName == "media-body")
+                .Where(x => x.ParentElement.TextContent.Contains("Token"));
 
-            return null; //fix temp
+            if (tokenHtmlEl.Count() != 1)
+            {
+                new Exception(); //fix temp. Warn about exception and stop program
+            }
+
+            return null; // temp
         }
     }
 }
