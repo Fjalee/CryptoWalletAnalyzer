@@ -8,8 +8,13 @@ namespace WebScraper
 {
     public class Parser
     {
-        private const string _domainUrl = "https://bscscan.com"; //fix temp put into config file
+        private readonly string _domainUrl;
         private const string _unknownTokenImg = "/images/main/empty-token.png";
+
+        public Parser(string domainUrl)
+        {
+            _domainUrl = domainUrl;
+        }
 
         public IElement ParseTxnTable(IHtmlDocument page)
         {
