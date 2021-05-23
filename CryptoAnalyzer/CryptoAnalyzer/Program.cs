@@ -1,12 +1,16 @@
-﻿using System;
+﻿using System.Configuration;
+using System.Threading.Tasks;
+using WebScraper;
 
 namespace CryptoAnalyzer
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main()
         {
-            Console.WriteLine("Hello World!");
+            var temp = await new WebScrapers(
+                ConfigurationManager.AppSettings.Get("DOMAIN_NAME_BSCSCAN"),
+                ConfigurationManager.AppSettings.Get("PATH_BSCSCAN")).Scrape();
         }
     }
 }
