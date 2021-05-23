@@ -14,7 +14,7 @@ namespace WebScraper
             _path = path;
         }
 
-        public async Task<List<Transaction>> Scrape()
+        public async Task<List<Transaction>> ScrapePage()
         {
             var scrapedPage = await new TempName().GetIHtmlDoc(_domainUrl + "/" + _path);
 

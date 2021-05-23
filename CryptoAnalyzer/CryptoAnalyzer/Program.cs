@@ -10,7 +10,7 @@ namespace CryptoAnalyzer
         {
             var temp = await new WebScrapers(
                 ConfigurationManager.AppSettings.Get("DOMAIN_NAME_BSCSCAN"),
-                ConfigurationManager.AppSettings.Get("PATH_BSCSCAN")).Scrape();
+                ConfigurationManager.AppSettings.Get("PATH_BSCSCAN")).ScrapePage();
         }
     }
 }
