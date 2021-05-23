@@ -40,8 +40,10 @@ namespace WebScraper
             return transactionsTable;
         }
 
-        public async Task ParseTxnRow(IElement row)
+        public async Task<Transaction> ParseTxnRow(IElement row)
         {
+            var transaction = new Transaction();
+
             try
             {
                 if (9 != row.Children.Length ||
@@ -55,15 +57,17 @@ namespace WebScraper
                 var pageCryptoInfo = await new TempName().GetIHtmlDoc(_domainUrl + pathCryptoInfo);
                 var cryptoInfo = ParseCryptoInfo(pageCryptoInfo);
 
-                var Known = cryptoInfo.Known;
-                var Token = cryptoInfo.Token;
-                var TxnHash = row.Children[1].Children[0].TextContent;
-                var Value = row.Children[7].TextContent;
+                transaction.Known = cryptoInfo.Known;
+                transaction.Token = cryptoInfo.Token;
+                transaction.TxnHash = row.Children[1].Children[0].TextContent;
+                transaction.Value = Convert.ToDouble(row.Children[7].TextContent);
             }
             catch
             {
                 new Exception(); //fix temp. Warn about exception and stop program
             }
+
+            return transaction;
         }
 
         private CryptoInfo ParseCryptoInfo(IHtmlDocument page)

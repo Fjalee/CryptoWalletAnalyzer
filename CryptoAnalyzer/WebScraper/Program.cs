@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace WebScraper
 {
@@ -16,9 +17,10 @@ namespace WebScraper
             var paraser = new Parser();
             var txnTable = paraser.ParseTxnTable(scrapedPage);
 
+            var allTxn = new List<Transaction>();
             foreach (var row in txnTable.Children)
             {
-                await paraser.ParseTxnRow(row);
+                allTxn.Add(await paraser.ParseTxnRow(row));
             }
         }
     }
