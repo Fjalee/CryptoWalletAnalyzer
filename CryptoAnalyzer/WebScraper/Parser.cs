@@ -2,6 +2,7 @@
 using AngleSharp.Html.Dom;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace WebScraper
@@ -59,12 +60,17 @@ namespace WebScraper
                     new Exception(); //fix temp. Warn about exception and stop program
                 }
 
-                var pathCryptoInfo = ((IHtmlAnchorElement)row.Children[8].Children[0]).PathName;
-                var pageCryptoInfo = await new TempName().GetIHtmlDoc(_domainUrl + pathCryptoInfo);
-                var cryptoInfo = ParseCryptoInfo(pageCryptoInfo);
+                //var pathCryptoInfo = ((IHtmlAnchorElement)row.Children[8].Children[0]).PathName;
+                //var pageCryptoInfo = await new TempName().GetIHtmlDoc(_domainUrl + pathCryptoInfo);
+                //var cryptoInfo = ParseCryptoInfo(pageCryptoInfo);
 
-                transaction.Known = cryptoInfo.Known;
-                transaction.Token = cryptoInfo.Token;
+                //transaction.Known = cryptoInfo.Known;
+                //transaction.Token = cryptoInfo.Token;
+
+                //transaction.Known 
+                //transaction.Token
+
+                ParseCryptoInfo2(row.Children[8].InnerHtml);
                 transaction.TxnHash = row.Children[1].Children[0].TextContent;
                 transaction.Value = Convert.ToDouble(row.Children[7].TextContent);
             }
@@ -94,6 +100,16 @@ namespace WebScraper
             }
 
             return token;
+        }
+        private CryptoInfo ParseCryptoInfo2(string innerHtml)
+        {
+            var rgxTxtForSrcStart = "<noscript><img[^>]*src=\\\"";
+            var srcStart = Regex.Match(innerHtml, rgxTxtForSrcStart);
+            var uncutSrc = Regex.Match(innerHtml, rgxTxtForSrcStart + "[^\"]*\\\"");
+
+            var src = uncutSrc.Value.Substring(srcStart.Length, uncutSrc.Length - srcStart.Length - 1);
+
+            return null;
         }
 
         private string ParseCryptoImgSrc(IElement tokenHtmlEl)

@@ -8,7 +8,7 @@ namespace CryptoAnalyzer
     {
         static async Task Main()
         {
-            await new WebScrapers(
+            var temp = await new WebScrapers(
                 ConfigurationManager.AppSettings.Get("DOMAIN_NAME_1"),
                 ConfigurationManager.AppSettings.Get("PATH_1"),
                 ConfigurationManager.AppSettings.Get("UNKNOWN_CRYPTO_1")).ScrapePage();
