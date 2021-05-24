@@ -4,13 +4,13 @@ using WebScraper;
 
 namespace CryptoAnalyzer
 {
-    class Program
+    public class Program
     {
         static async Task Main()
         {
             var temp = await new WebScrapers(
-                ConfigurationManager.AppSettings.Get("DOMAIN_NAME_BSCSCAN"),
-                ConfigurationManager.AppSettings.Get("PATH_BSCSCAN")).ScrapePage();
+                ConfigurationManager.AppSettings.Get("DOMAIN_NAME_1"),
+                ConfigurationManager.AppSettings.Get("PATH_1")).ScrapePage();
         }
     }
 }
