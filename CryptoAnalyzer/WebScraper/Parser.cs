@@ -9,11 +9,12 @@ namespace WebScraper
     public class Parser
     {
         private readonly string _domainUrl;
-        private const string _unknownTokenImg = "/images/main/empty-token.png";
+        private readonly string _unknownTokenImg;
 
-        public Parser(string domainUrl)
+        public Parser(string domainUrl, string unknownTokenImg)
         {
             _domainUrl = domainUrl;
+            _unknownTokenImg = unknownTokenImg;
         }
 
         public IElement ParseTxnTable(IHtmlDocument page)
