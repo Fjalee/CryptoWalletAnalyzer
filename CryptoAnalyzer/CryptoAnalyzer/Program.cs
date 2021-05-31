@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
+using System.Threading;
 using System.Threading.Tasks;
 using WebScraper;
 
@@ -11,7 +12,7 @@ namespace CryptoAnalyzer
         {
             var allTransactions = new List<Transaction>();
 
-            for (var i = 0; i < 10; i++) //fix temp loop 10 times
+            for (var i = 0; i < 100; i++) //fix temp loop 10 times
             {
                 var pageTransactions = await new BscscanWebScraper(
                     ConfigurationManager.AppSettings.Get("DOMAIN_NAME_BSCSCAN"),
@@ -22,6 +23,8 @@ namespace CryptoAnalyzer
                     ).ScrapePage();
 
                 allTransactions.AddRange(pageTransactions);
+
+                Thread.Sleep(1000);
             }
 
         }

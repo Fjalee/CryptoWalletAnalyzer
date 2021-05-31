@@ -90,7 +90,14 @@ namespace WebScraper
 
         override protected double ParseValue(IElement row)
         {
-            return Convert.ToDouble(row.Children[7].TextContent);
+            try
+            {
+                return Convert.ToDouble(row.Children[7].TextContent);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }
