@@ -2,7 +2,6 @@
 using AngleSharp.Html.Dom;
 using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace WebScraper
@@ -60,17 +59,8 @@ namespace WebScraper
                     new Exception(); //fix temp. Warn about exception and stop program
                 }
 
-                //var pathCryptoInfo = ((IHtmlAnchorElement)row.Children[8].Children[0]).PathName;
-                //var pageCryptoInfo = await new TempName().GetIHtmlDoc(_domainUrl + pathCryptoInfo);
-                //var cryptoInfo = ParseCryptoInfo(pageCryptoInfo);
-
-                //transaction.Known = cryptoInfo.Known;
-                //transaction.Token = cryptoInfo.Token;
-
-                //transaction.Known 
-                //transaction.Token
-
-                ParseCryptoInfo2(row.Children[8].InnerHtml);
+                transaction.Known = (ParseCryptoImgSrc(row) != _unknownTokenImg);
+                transaction.Token = row.Children[8].TextContent;
                 transaction.TxnHash = row.Children[1].Children[0].TextContent;
                 transaction.Value = Convert.ToDouble(row.Children[7].TextContent);
             }
@@ -82,54 +72,14 @@ namespace WebScraper
             return transaction;
         }
 
-        private CryptoInfo ParseCryptoInfo(IHtmlDocument page)
+        private string ParseCryptoImgSrc(IElement row)
         {
-            var token = new CryptoInfo();
+            var imgElements = row.Children[8].Children[0].Children
+                .Where(x => x.LocalName == "noscript")
+                .Where(x => x.Children[0].LocalName == "img")
+                .Select(x => x.Children[0]);
 
-            var tokenHtmlEl = page.All
-                .Where(x => x.LocalName == "span" && x.ClassName == "text-secondary small")
-                .Where(x => x.ParentElement.ClassName == "media-body")
-                .Where(x => x.ParentElement.TextContent.Contains("Token"));
-
-            token.Token = tokenHtmlEl.First().TextContent;
-            token.Known = ParseCryptoImgSrc(tokenHtmlEl.First()) != _unknownTokenImg;
-
-            if (tokenHtmlEl.Count() != 1)
-            {
-                new Exception(); //fix temp. Warn about exception and stop program
-            }
-
-            return token;
-        }
-        private CryptoInfo ParseCryptoInfo2(string innerHtml)
-        {
-            var rgxTxtForSrcStart = "<noscript><img[^>]*src=\\\"";
-            var srcStart = Regex.Match(innerHtml, rgxTxtForSrcStart);
-            var uncutSrc = Regex.Match(innerHtml, rgxTxtForSrcStart + "[^\"]*\\\"");
-
-            var src = uncutSrc.Value.Substring(srcStart.Length, uncutSrc.Length - srcStart.Length - 1);
-
-            return null;
-        }
-
-        private string ParseCryptoImgSrc(IElement tokenHtmlEl)
-        {
-            var imageOuterHtml = tokenHtmlEl.ParentElement.ParentElement.Children
-                .Where(x => x.LocalName == "img")
-                .Where(x => x.ClassName == "u-sm-avatar mr-2")
-                .Select(x => x.OuterHtml);
-
-
-            var srcStart = imageOuterHtml.First().IndexOf("src=\"") + "src=\"".Length;
-            var srcEnd = imageOuterHtml.First().Substring(srcStart).IndexOf("\"");
-
-
-            if (imageOuterHtml.Count() != 1)
-            {
-                new Exception(); //fix temp. Warn about exception and stop program
-            }
-
-            return imageOuterHtml.First().Substring(srcStart, srcEnd);
+            return ((IHtmlImageElement)imgElements.FirstOrDefault()).Source;
         }
     }
 }
