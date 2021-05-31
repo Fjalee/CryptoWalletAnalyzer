@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using AngleSharp.Html.Dom;
+using AngleSharp.Html.Parser;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WebScraper
@@ -18,7 +22,7 @@ namespace WebScraper
 
         public async Task<List<Transaction>> ScrapePage()
         {
-            var scrapedPageHtml = await new TempName().GetIHtmlDoc(_domainUrl + "/" + _path);
+            var scrapedPageHtml = await GetIHtmlDoc(_domainUrl + "/" + _path);
 
             var txnTable = _parser.ParseTxnTable(scrapedPageHtml);
 
@@ -29,6 +33,25 @@ namespace WebScraper
             }
 
             return allTxn;
+        }
+
+        public async Task<IHtmlDocument> GetIHtmlDoc(string siteUrl)
+        {
+            var cancellationToken = new CancellationTokenSource();
+            var httpClient = new HttpClient();
+
+            var request = await httpClient.GetAsync(siteUrl);
+            cancellationToken.Token.ThrowIfCancellationRequested();
+
+            var response = await request.Content.ReadAsStreamAsync();
+            cancellationToken.Token.ThrowIfCancellationRequested();
+
+            var parser = new HtmlParser();
+
+            cancellationToken.Dispose();
+            httpClient.Dispose();
+
+            return parser.ParseDocument(response);
         }
     }
 }
