@@ -2,7 +2,6 @@
 using AngleSharp.Html.Dom;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace WebScraper
 {
@@ -46,7 +45,7 @@ namespace WebScraper
             return transactionsTable;
         }
 
-        public async Task<Transaction> ParseTxnRow(IElement row)
+        public Transaction ParseTxnRow(IElement row)
         {
             var transaction = new Transaction();
 
