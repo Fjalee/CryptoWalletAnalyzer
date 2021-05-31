@@ -12,7 +12,7 @@ namespace CryptoAnalyzer
         {
             var allTransactions = new List<Transaction>();
 
-            for (var i = 0; i < 100; i++) //fix temp loop 10 times
+            for (var i = 0; i < 200; i++) //fix temp loop 10 times
             {
                 var pageTransactions = await new BscscanWebScraper(
                     ConfigurationManager.AppSettings.Get("DOMAIN_NAME_BSCSCAN"),

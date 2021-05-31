@@ -92,11 +92,22 @@ namespace WebScraper
         {
             try
             {
-                return Convert.ToDouble(row.Children[7].TextContent);
+                var scrapedValString = row.Children[7].TextContent;
+                if (scrapedValString.Contains("..."))
+                {
+                    scrapedValString = scrapedValString.Replace("...", String.Empty);
+
+                    if (!scrapedValString.Contains('.'))
+                    {
+                        throw new Exception(); //fix temp. Warn about exception and stop program
+                    }
+                }
+
+                return Convert.ToDouble(scrapedValString);
             }
             catch (Exception)
             {
-                throw;
+                throw; //fix temp. Warn about exception and stop program
             }
         }
     }
