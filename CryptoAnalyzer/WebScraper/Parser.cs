@@ -7,12 +7,10 @@ namespace WebScraper
 {
     public class Parser
     {
-        private readonly string _domainUrl;
         private readonly string _unknownTokenImg;
 
-        public Parser(string domainUrl, string unknownTokenImg)
+        public Parser(string unknownTokenImg)
         {
-            _domainUrl = domainUrl;
             _unknownTokenImg = unknownTokenImg;
         }
 

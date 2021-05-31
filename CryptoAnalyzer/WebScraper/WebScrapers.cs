@@ -20,7 +20,7 @@ namespace WebScraper
         {
             var scrapedPage = await new TempName().GetIHtmlDoc(_domainUrl + "/" + _path);
 
-            var paraser = new Parser(_domainUrl, _unknownTokenImg);
+            var paraser = new Parser(_unknownTokenImg);
             var txnTable = paraser.ParseTxnTable(scrapedPage);
 
             var allTxn = new List<Transaction>();
