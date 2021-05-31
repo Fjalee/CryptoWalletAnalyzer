@@ -5,11 +5,11 @@ using System.Linq;
 
 namespace WebScraper
 {
-    public class Parser
+    public class BscscanParser
     {
         private readonly string _unknownTokenImg;
 
-        public Parser(string unknownTokenImg)
+        public BscscanParser(string unknownTokenImg)
         {
             _unknownTokenImg = unknownTokenImg;
         }
