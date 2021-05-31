@@ -5,16 +5,11 @@ using System.Linq;
 
 namespace WebScraper
 {
-    public class BscscanParser
+    public class BscscanParser : Parser
     {
-        private readonly string _unknownTokenImg;
+        public BscscanParser(string unknownTokenImg) : base(unknownTokenImg) { }
 
-        public BscscanParser(string unknownTokenImg)
-        {
-            _unknownTokenImg = unknownTokenImg;
-        }
-
-        public IElement ParseTxnTable(IHtmlDocument page)
+        override public IElement ParseTxnTable(IHtmlDocument page)
         {
             IElement transactionsTable = null;
 
@@ -43,40 +38,59 @@ namespace WebScraper
             return transactionsTable;
         }
 
-        public Transaction ParseTxnRow(IElement row)
+        override public Transaction ParseTxnRow(IElement row)
         {
             var transaction = new Transaction();
 
             try
             {
                 if (9 != row.Children.Length ||
-                    "has-tag text-truncate" != row.Children[1].Children[0].ClassName
-                    )
+                    "has-tag text-truncate" != row.Children[1].Children[0].ClassName)
                 {
                     new Exception(); //fix temp. Warn about exception and stop program
                 }
 
-                transaction.Known = (ParseCryptoImgSrc(row) != _unknownTokenImg);
-                transaction.Token = row.Children[8].TextContent;
-                transaction.TxnHash = row.Children[1].Children[0].TextContent;
-                transaction.Value = Convert.ToDouble(row.Children[7].TextContent);
+                transaction.Known = (ParseImgSrc(row) != _unknownTokenImg);
+                transaction.Token = ParseToken(row);
+                transaction.TxnHash = ParseTxnHash(row);
+                transaction.Value = ParseValue(row);
             }
             catch
             {
-                new Exception(); //fix temp. Warn about exception and stop program
+                throw new Exception(); //fix temp. Warn about exception and stop program
             }
 
             return transaction;
         }
 
-        private string ParseCryptoImgSrc(IElement row)
+        override protected string ParseImgSrc(IElement row)
         {
             var imgElements = row.Children[8].Children[0].Children
                 .Where(x => x.LocalName == "noscript")
                 .Where(x => x.Children[0].LocalName == "img")
                 .Select(x => x.Children[0]);
 
-            return ((IHtmlImageElement)imgElements.FirstOrDefault()).Source;
+            if (imgElements.Count() != 1)
+            {
+                throw new Exception(); //fix temp. Warn about exception and stop program
+            }
+
+            return ((IHtmlImageElement)imgElements.First()).Source;
+        }
+
+        override protected string ParseToken(IElement row)
+        {
+            return row.Children[8].TextContent;
+        }
+
+        override protected string ParseTxnHash(IElement row)
+        {
+            return row.Children[1].Children[0].TextContent;
+        }
+
+        override protected double ParseValue(IElement row)
+        {
+            return Convert.ToDouble(row.Children[7].TextContent);
         }
     }
 }
