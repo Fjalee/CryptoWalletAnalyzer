@@ -50,7 +50,7 @@ namespace WebScraper
                     new Exception(); //fix temp. Warn about exception and stop program
                 }
 
-                transaction.Known = (ParseImgSrc(row) != _unknownTokenImg);
+                transaction.Known = ParseImgSrc(row) != _unknownTokenImg;
                 transaction.Token = ParseToken(row);
                 transaction.TxnHash = ParseTxnHash(row);
                 transaction.Value = ParseValue(row);
