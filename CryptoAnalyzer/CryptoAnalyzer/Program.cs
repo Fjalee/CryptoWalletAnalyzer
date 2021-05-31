@@ -9,9 +9,9 @@ namespace CryptoAnalyzer
     {
         static async Task Main()
         {
-            List<Transaction> allTransactions = new List<Transaction>();
+            var allTransactions = new List<Transaction>();
 
-            for (int i = 0; i < 10; i++) //fix temp loop 10 times
+            for (var i = 0; i < 10; i++) //fix temp loop 10 times
             {
                 var pageTransactions = await new BscscanWebScraper(
                     ConfigurationManager.AppSettings.Get("DOMAIN_NAME_1"),
