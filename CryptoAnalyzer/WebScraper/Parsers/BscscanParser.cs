@@ -75,17 +75,35 @@ namespace WebScraper
                 throw new Exception(); //fix temp. Warn about exception and stop program
             }
 
-            return ((IHtmlImageElement)imgElements.First()).Source;
+            var imgSrc = ((IHtmlImageElement)imgElements.First()).Source;
+            if (imgSrc == "" || imgSrc == null)
+            {
+                throw new Exception();
+            }
+
+            return imgSrc;
         }
 
         override protected string ParseToken(IElement row)
         {
-            return row.Children[8].TextContent;
+            var token = row.Children[8].TextContent;
+            if (token == "" || token == null)
+            {
+                throw new Exception();
+            }
+
+            return token;
         }
 
         override protected string ParseTxnHash(IElement row)
         {
-            return row.Children[1].Children[0].TextContent;
+            var txnHash = row.Children[1].Children[0].TextContent;
+            if (txnHash == "" || txnHash == null)
+            {
+                throw new Exception();
+            }
+
+            return txnHash;
         }
 
         override protected TokenValueInfo ParseValue(IElement row)
@@ -93,6 +111,12 @@ namespace WebScraper
             try
             {
                 var scrapedValString = row.Children[7].TextContent;
+
+                if (scrapedValString == "" || scrapedValString == null)
+                {
+                    throw new Exception();
+                }
+
                 if (scrapedValString.Contains("..."))
                 {
                     scrapedValString = scrapedValString.Replace("...", String.Empty);

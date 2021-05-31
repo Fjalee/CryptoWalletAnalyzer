@@ -27,6 +27,14 @@ namespace CryptoAnalyzer
                 Thread.Sleep(1000);
             }
 
+            var tooBig = new List<Transaction>();
+            foreach (var trans in allTransactions)
+            {
+                if (trans.ValueInfo.Inaccurate)
+                {
+                    tooBig.Add(trans);
+                }
+            }
         }
     }
 }
