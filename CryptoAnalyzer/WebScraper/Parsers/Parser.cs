@@ -22,6 +22,6 @@ namespace WebScraper
 
         abstract protected string ParseTxnHash(IElement row);
 
-        abstract protected double ParseValue(IElement row);
+        abstract protected TokenValueInfo ParseValue(IElement row);
     }
 }

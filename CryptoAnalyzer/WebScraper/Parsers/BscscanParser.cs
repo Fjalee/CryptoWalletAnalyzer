@@ -53,7 +53,7 @@ namespace WebScraper
                 transaction.Known = ParseImgSrc(row) != _unknownTokenImg;
                 transaction.Token = ParseToken(row);
                 transaction.TxnHash = ParseTxnHash(row);
-                transaction.Value = ParseValue(row);
+                transaction.ValueInfo = ParseValue(row);
             }
             catch
             {
@@ -88,7 +88,7 @@ namespace WebScraper
             return row.Children[1].Children[0].TextContent;
         }
 
-        override protected double ParseValue(IElement row)
+        override protected TokenValueInfo ParseValue(IElement row)
         {
             try
             {
@@ -99,11 +99,11 @@ namespace WebScraper
 
                     if (!scrapedValString.Contains('.'))
                     {
-                        throw new Exception(); //fix temp. Warn about exception and stop program
+                        return new TokenValueInfo(Convert.ToDouble(scrapedValString), true);
                     }
                 }
 
-                return Convert.ToDouble(scrapedValString);
+                return new TokenValueInfo(Convert.ToDouble(scrapedValString), false);
             }
             catch (Exception)
             {
