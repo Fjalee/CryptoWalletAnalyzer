@@ -87,6 +87,12 @@ namespace WebScraper
         override protected string ParseToken(IElement row)
         {
             var token = row.Children[8].TextContent;
+
+            if (token.Contains("\n\n\n"))
+            {
+                token = token.Substring(token.IndexOf("\n\n\n") + "\n\n\n".Length);
+            }
+
             if (token == "" || token == null)
             {
                 throw new Exception();
