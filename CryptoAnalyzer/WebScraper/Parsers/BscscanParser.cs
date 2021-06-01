@@ -98,7 +98,7 @@ namespace WebScraper
                 throw new Exception();
             }
 
-            return token;
+            return token.Substring(1); // space at the start
         }
 
         override protected string ParseTxnHash(IElement row)
