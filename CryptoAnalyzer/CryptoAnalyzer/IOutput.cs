@@ -1,0 +1,7 @@
+﻿namespace CryptoAnalyzer
+{
+    interface IOutput
+    {
+
+    }
+}
