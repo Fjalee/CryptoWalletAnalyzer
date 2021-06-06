@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using WebScraper;
@@ -10,9 +11,14 @@ namespace CryptoAnalyzer
     {
         static async Task Main()
         {
+            var nmOfOutputAppends = 0;
+            var appendPeriodInMs = int.Parse(ConfigurationManager.AppSettings.Get("OUTPUT_APPEND_PERIOD_IN_SECONDS")) * 1000;
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             var allTransactions = new List<Transaction>();
 
-            for (var i = 0; i < 1; i++) //fix temp loop 10 times
+            while (true)
             {
                 var pageTransactions = await new BscscanWebScraper(
                     ConfigurationManager.AppSettings.Get("DOMAIN_NAME_BSCSCAN"),
@@ -25,11 +31,16 @@ namespace CryptoAnalyzer
                 allTransactions.AddRange(pageTransactions);
 
                 Thread.Sleep(1000);
+
+                if ((nmOfOutputAppends + 1) * appendPeriodInMs < stopwatch.ElapsedMilliseconds)
+                {
+                    nmOfOutputAppends++;
+                    new CsvOutput().CreateFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), "1", allTransactions); //temp fix 1
+                }
             }
 
-            new CsvOutput().CreateFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), "1", allTransactions); //temp fix 1
 
-
+            stopwatch.Stop();
 
 
 
