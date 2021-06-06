@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -13,10 +14,22 @@ namespace CryptoAnalyzer
 
 
             Directory.CreateDirectory(pathName);
-            using (var writer = File.AppendText(fullPath))
-            using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+
+            try
             {
-                csv.WriteRecords(list);
+                using (var writer = File.AppendText(fullPath))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(list);
+                }
+            }
+            catch (IOException e)
+            {
+                //fix temp add console text
+            }
+            catch
+            {
+                throw;
             }
         }
     }

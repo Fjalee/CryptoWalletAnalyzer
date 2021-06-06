@@ -35,7 +35,14 @@ namespace CryptoAnalyzer
                 if ((nmOfOutputAppends + 1) * appendPeriodInMs < stopwatch.ElapsedMilliseconds)
                 {
                     nmOfOutputAppends++;
-                    new CsvOutput().CreateFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), "1", allTransactions); //temp fix 1
+                    try
+                    {
+                        new CsvOutput().CreateFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), "1", allTransactions); //temp fix 1
+                    }
+                    catch
+                    {
+                        //temp add exception handling
+                    }
                 }
             }
 
