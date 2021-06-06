@@ -39,14 +39,6 @@ namespace CryptoAnalyzer
                     output = new Output().Append(output, allNewTransactions);
                     try
                     {
-                        foreach (var item in allNewTransactions)
-                        {
-                            if (item.ValueInfo.Inaccurate)
-                            {
-                                var x = 0;
-                            }
-                        }
-
                         new CsvOutput().CreateFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), nmOfOutputAppends.ToString(), output); //temp fix 1
                         allNewTransactions.Clear();
                     }
