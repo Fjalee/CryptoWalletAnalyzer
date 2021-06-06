@@ -8,7 +8,7 @@ namespace CryptoAnalyzer
 {
     public class CsvOutput : IOutput
     {
-        public void CreateFile(string pathName, string fileName, List<WebScraper.Transaction> list)
+        public void CreateFile(string pathName, string fileName, List<TokenOutputDto> list)
         {
             var fullPath = pathName + '/' + fileName + ".csv";
 

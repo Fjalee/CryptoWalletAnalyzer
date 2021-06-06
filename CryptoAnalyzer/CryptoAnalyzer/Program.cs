@@ -16,7 +16,9 @@ namespace CryptoAnalyzer
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var allTransactions = new List<Transaction>();
+            var allNewTransactions = new List<Transaction>();
+            var output = new List<TokenOutputDto>();
+
 
             while (true)
             {
@@ -28,20 +30,25 @@ namespace CryptoAnalyzer
                         )
                     ).ScrapePage();
 
-                allTransactions.AddRange(pageTransactions);
+                allNewTransactions.AddRange(pageTransactions);
 
                 Thread.Sleep(1000);
 
                 if ((nmOfOutputAppends + 1) * appendPeriodInMs < stopwatch.ElapsedMilliseconds)
                 {
-                    nmOfOutputAppends++;
+                    output = new Output().Append(output, allNewTransactions);
                     try
                     {
-                        new CsvOutput().CreateFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), "1", allTransactions); //temp fix 1
+                        new CsvOutput().CreateFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), "1", output); //temp fix 1
+                        allNewTransactions.Clear();
                     }
                     catch
                     {
                         //temp add exception handling
+                    }
+                    finally
+                    {
+                        nmOfOutputAppends++;
                     }
                 }
             }
@@ -54,7 +61,7 @@ namespace CryptoAnalyzer
 
 
             //var tooBig = new List<Transaction>();
-            //foreach (var trans in allTransactions)
+            //foreach (var trans in allNewTransactions)
             //{
             //    if (trans.ValueInfo.Inaccurate)
             //    {
