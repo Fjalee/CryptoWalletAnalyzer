@@ -39,7 +39,7 @@ namespace CryptoAnalyzer
                     output = new Output().Append(output, allNewTransactions);
                     try
                     {
-                        new CsvOutput().CreateFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), "1", output); //temp fix 1
+                        new CsvOutput().CreateFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), nmOfOutputAppends.ToString(), output); //temp fix 1
                         allNewTransactions.Clear();
                     }
                     catch
