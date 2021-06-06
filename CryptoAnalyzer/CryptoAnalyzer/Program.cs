@@ -12,7 +12,7 @@ namespace CryptoAnalyzer
         {
             var allTransactions = new List<Transaction>();
 
-            for (var i = 0; i < 5; i++) //fix temp loop 10 times
+            for (var i = 0; i < 1; i++) //fix temp loop 10 times
             {
                 var pageTransactions = await new BscscanWebScraper(
                     ConfigurationManager.AppSettings.Get("DOMAIN_NAME_BSCSCAN"),
@@ -27,14 +27,22 @@ namespace CryptoAnalyzer
                 Thread.Sleep(1000);
             }
 
-            var tooBig = new List<Transaction>();
-            foreach (var trans in allTransactions)
-            {
-                if (trans.ValueInfo.Inaccurate)
-                {
-                    tooBig.Add(trans);
-                }
-            }
+            new CsvOutput().CreateFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), "1", allTransactions); //temp fix 1
+
+
+
+
+
+
+
+            //var tooBig = new List<Transaction>();
+            //foreach (var trans in allTransactions)
+            //{
+            //    if (trans.ValueInfo.Inaccurate)
+            //    {
+            //        tooBig.Add(trans);
+            //    }
+            //}
         }
     }
 }
