@@ -38,13 +38,14 @@ namespace CryptoAnalyzer
                 if ((nmOfOutputWrite + 1) * appendPeriodInMs < stopwatch.ElapsedMilliseconds)
                 {
                     output = new Output().Append(output, allNewTransactions);
+                    allNewTransactions.Clear();
+
                     var ts = stopwatch.Elapsed;
                     var timeOutput = string.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
 
                     try
                     {
                         new CsvOutput().WriteFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), outputName, output, timeOutput);
-                        allNewTransactions.Clear();
                         nmOfOutputWrite++;
                     }
                     catch
