@@ -56,8 +56,6 @@ namespace CryptoAnalyzer
                     }
                 }
             }
-
-            stopwatch.Stop();
         }
     }
 }
