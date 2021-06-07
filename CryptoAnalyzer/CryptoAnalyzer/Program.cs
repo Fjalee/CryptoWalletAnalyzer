@@ -37,6 +37,7 @@ namespace CryptoAnalyzer
                 if ((nmOfOutputAppends + 1) * appendPeriodInMs < stopwatch.ElapsedMilliseconds)
                 {
                     output = new Output().Append(output, allNewTransactions);
+
                     try
                     {
                         new CsvOutput().CreateFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), nmOfOutputAppends.ToString(), output); //temp fix 1

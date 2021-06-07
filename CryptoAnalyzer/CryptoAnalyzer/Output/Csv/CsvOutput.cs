@@ -20,6 +20,7 @@ namespace CryptoAnalyzer
                 using (var writer = File.AppendText(fullPath))
                 using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                 {
+                    csv.Context.RegisterClassMap<TokenOutputDtoMap>();
                     csv.WriteRecords(list);
                 }
             }
