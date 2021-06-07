@@ -54,21 +54,7 @@ namespace CryptoAnalyzer
                 }
             }
 
-
             stopwatch.Stop();
-
-
-
-
-
-            //var tooBig = new List<Transaction>();
-            //foreach (var trans in allNewTransactions)
-            //{
-            //    if (trans.ValueInfo.Inaccurate)
-            //    {
-            //        tooBig.Add(trans);
-            //    }
-            //}
         }
     }
 }
