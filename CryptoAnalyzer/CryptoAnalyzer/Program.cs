@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Threading;
@@ -37,10 +38,12 @@ namespace CryptoAnalyzer
                 if ((nmOfOutputAppends + 1) * appendPeriodInMs < stopwatch.ElapsedMilliseconds)
                 {
                     output = new Output().Append(output, allNewTransactions);
+                    var ts = stopwatch.Elapsed;
+                    var timeOutput = string.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
 
                     try
                     {
-                        new CsvOutput().CreateFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), nmOfOutputAppends.ToString(), output); //temp fix 1
+                        new CsvOutput().WriteFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), nmOfOutputAppends.ToString(), output, timeOutput);
                         allNewTransactions.Clear();
                     }
                     catch

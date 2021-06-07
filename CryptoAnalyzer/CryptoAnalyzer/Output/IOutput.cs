@@ -4,6 +4,6 @@ namespace CryptoAnalyzer
 {
     interface IOutput
     {
-        public void CreateFile(string pathName, string fileName, List<TokenOutputDto> list);
+        public void WriteFile(string pathName, string fileName, List<TokenOutputDto> list, string timeElapsed);
     }
 }

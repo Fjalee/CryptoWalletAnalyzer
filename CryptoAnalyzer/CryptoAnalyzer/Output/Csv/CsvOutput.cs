@@ -8,10 +8,9 @@ namespace CryptoAnalyzer
 {
     public class CsvOutput : IOutput
     {
-        public void CreateFile(string pathName, string fileName, List<TokenOutputDto> list)
+        public void WriteFile(string pathName, string fileName, List<TokenOutputDto> list, string timeElapsed)
         {
-            var fullPath = pathName + '/' + fileName + ".csv";
-
+            var fullPath = pathName + '\\' + fileName + ".csv";
 
             Directory.CreateDirectory(pathName);
 
@@ -21,6 +20,10 @@ namespace CryptoAnalyzer
                 using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                 {
                     csv.Context.RegisterClassMap<TokenOutputDtoMap>();
+                    csv.WriteField("Time elapsed:");
+                    csv.WriteField(timeElapsed);
+                    csv.NextRecord();
+                    csv.NextRecord();
                     csv.WriteRecords(list);
                 }
             }
