@@ -1,6 +1,4 @@
-﻿using AngleSharp.Dom;
-
-namespace WebScraper
+﻿namespace WebScraper
 {
     public class Transaction
     {
