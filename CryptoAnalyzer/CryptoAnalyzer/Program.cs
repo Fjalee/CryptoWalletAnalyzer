@@ -31,7 +31,6 @@ namespace CryptoAnalyzer
                         ConfigurationManager.AppSettings.Get(@"about://" + "UNKOWN_CRYPTO_IMG_BSCSCAN")
                         )
                     ).ScrapePage();
-
                 allNewTransactions.AddRange(pageTransactions);
                 nmTxnScraped += pageTransactions.Count;
 
