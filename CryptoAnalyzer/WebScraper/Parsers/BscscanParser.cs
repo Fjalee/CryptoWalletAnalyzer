@@ -54,6 +54,7 @@ namespace WebScraper
                 transaction.Token = ParseToken(row);
                 transaction.TxnHash = ParseTxnHash(row);
                 transaction.ValueInfo = ParseValue(row);
+                //transaction.Element = row; //fix temp for debugging remove when done
             }
             catch
             {

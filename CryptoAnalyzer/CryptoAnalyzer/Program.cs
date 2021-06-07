@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using WebScraper;
@@ -10,29 +12,45 @@ namespace CryptoAnalyzer
     {
         static async Task Main()
         {
-            var allTransactions = new List<Transaction>();
+            var nmOfOutputAppends = 0;
+            var appendPeriodInMs = int.Parse(ConfigurationManager.AppSettings.Get("OUTPUT_APPEND_PERIOD_IN_SECONDS")) * 1000;
 
-            for (var i = 0; i < 5; i++) //fix temp loop 10 times
+            var stopwatch = new Stopwatch();
+            var outputName = DateTime.Now.ToString("yyyy.MM.dd-HH;mm");
+            var allNewTransactions = new List<Transaction>();
+            var output = new List<TokenOutputDto>();
+
+            stopwatch.Start();
+            while (true)
             {
                 var pageTransactions = await new BscscanWebScraper(
                     ConfigurationManager.AppSettings.Get("DOMAIN_NAME_BSCSCAN"),
                     ConfigurationManager.AppSettings.Get("PATH_BSCSCAN"),
                     new BscscanParser(
-                        ConfigurationManager.AppSettings.Get("UNKNOWN_CRYPTO_BSCSCAN")
+                        ConfigurationManager.AppSettings.Get("UNKOWN_CRYPTO_IMG_BSCSCAN")
                         )
                     ).ScrapePage();
 
-                allTransactions.AddRange(pageTransactions);
+                allNewTransactions.AddRange(pageTransactions);
 
                 Thread.Sleep(1000);
-            }
 
-            var tooBig = new List<Transaction>();
-            foreach (var trans in allTransactions)
-            {
-                if (trans.ValueInfo.Inaccurate)
+                if ((nmOfOutputAppends + 1) * appendPeriodInMs < stopwatch.ElapsedMilliseconds)
                 {
-                    tooBig.Add(trans);
+                    output = new Output().Append(output, allNewTransactions);
+                    var ts = stopwatch.Elapsed;
+                    var timeOutput = string.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
+
+                    try
+                    {
+                        new CsvOutput().WriteFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), outputName, output, timeOutput);
+                        allNewTransactions.Clear();
+                        nmOfOutputAppends++;
+                    }
+                    catch
+                    {
+                        //temp add exception handling
+                    }
                 }
             }
         }
