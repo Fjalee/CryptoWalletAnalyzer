@@ -22,12 +22,12 @@ namespace CryptoAnalyzer
         {
             if (newVal.Inaccurate)
             {
-                TotalInaccurateValue = newVal.Value;
+                TotalInaccurateValue += newVal.Value;
                 TotalInaccurateTxns++;
             }
             else
             {
-                TotalValue = newVal.Value;
+                TotalValue += newVal.Value;
                 TotalTxns++;
             }
         }
