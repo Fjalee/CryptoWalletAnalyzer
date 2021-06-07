@@ -40,19 +40,17 @@ namespace CryptoAnalyzer
                     output = new Output().Append(output, allNewTransactions);
                     var ts = stopwatch.Elapsed;
                     var timeOutput = string.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
+                    var outputName = DateTime.Now.ToString("yyyy.MM.dd-HH;mm");
 
                     try
                     {
-                        new CsvOutput().WriteFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), nmOfOutputAppends.ToString(), output, timeOutput);
+                        new CsvOutput().WriteFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), outputName, output, timeOutput);
                         allNewTransactions.Clear();
+                        nmOfOutputAppends++;
                     }
                     catch
                     {
                         //temp add exception handling
-                    }
-                    finally
-                    {
-                        nmOfOutputAppends++;
                     }
                 }
             }
