@@ -27,7 +27,7 @@ namespace CryptoAnalyzer
                     ConfigurationManager.AppSettings.Get("DOMAIN_NAME_BSCSCAN"),
                     ConfigurationManager.AppSettings.Get("PATH_BSCSCAN"),
                     new BscscanParser(
-                        ConfigurationManager.AppSettings.Get("UNKOWN_CRYPTO_IMG_BSCSCAN")
+                        ConfigurationManager.AppSettings.Get(@"about://" + "UNKOWN_CRYPTO_IMG_BSCSCAN")
                         )
                     ).ScrapePage();
 
