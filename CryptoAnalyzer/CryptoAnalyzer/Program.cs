@@ -16,11 +16,11 @@ namespace CryptoAnalyzer
             var appendPeriodInMs = int.Parse(ConfigurationManager.AppSettings.Get("OUTPUT_APPEND_PERIOD_IN_SECONDS")) * 1000;
 
             var stopwatch = new Stopwatch();
-            stopwatch.Start();
+            var outputName = DateTime.Now.ToString("yyyy.MM.dd-HH;mm");
             var allNewTransactions = new List<Transaction>();
             var output = new List<TokenOutputDto>();
 
-
+            stopwatch.Start();
             while (true)
             {
                 var pageTransactions = await new BscscanWebScraper(
@@ -40,7 +40,6 @@ namespace CryptoAnalyzer
                     output = new Output().Append(output, allNewTransactions);
                     var ts = stopwatch.Elapsed;
                     var timeOutput = string.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
-                    var outputName = DateTime.Now.ToString("yyyy.MM.dd-HH;mm");
 
                     try
                     {
