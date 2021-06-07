@@ -12,7 +12,7 @@ namespace CryptoAnalyzer
     {
         static async Task Main()
         {
-            var nmOfOutputAppends = 0;
+            var nmOfOutputWrite = 0;
             var appendPeriodInMs = int.Parse(ConfigurationManager.AppSettings.Get("OUTPUT_APPEND_PERIOD_IN_SECONDS")) * 1000;
 
             var stopwatch = new Stopwatch();
@@ -35,7 +35,7 @@ namespace CryptoAnalyzer
 
                 Thread.Sleep(1000);
 
-                if ((nmOfOutputAppends + 1) * appendPeriodInMs < stopwatch.ElapsedMilliseconds)
+                if ((nmOfOutputWrite + 1) * appendPeriodInMs < stopwatch.ElapsedMilliseconds)
                 {
                     output = new Output().Append(output, allNewTransactions);
                     var ts = stopwatch.Elapsed;
@@ -45,7 +45,7 @@ namespace CryptoAnalyzer
                     {
                         new CsvOutput().WriteFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), outputName, output, timeOutput);
                         allNewTransactions.Clear();
-                        nmOfOutputAppends++;
+                        nmOfOutputWrite++;
                     }
                     catch
                     {
