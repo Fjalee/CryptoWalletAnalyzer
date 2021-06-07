@@ -18,6 +18,7 @@ namespace CryptoAnalyzer
             var stopwatch = new Stopwatch();
             var outputName = DateTime.Now.ToString("yyyy.MM.dd-HH;mm");
             var allNewTransactions = new List<Transaction>();
+            var nmTxnScraped = 0;
             var output = new List<TokenOutputDto>();
 
             stopwatch.Start();
@@ -32,6 +33,7 @@ namespace CryptoAnalyzer
                     ).ScrapePage();
 
                 allNewTransactions.AddRange(pageTransactions);
+                nmTxnScraped += pageTransactions.Count;
 
                 Thread.Sleep(1000);
 
@@ -45,7 +47,7 @@ namespace CryptoAnalyzer
 
                     try
                     {
-                        new CsvOutput().WriteFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), outputName, output, timeOutput);
+                        new CsvOutput().WriteFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), outputName, output, timeOutput, nmTxnScraped);
                         nmOfOutputWrite++;
                     }
                     catch

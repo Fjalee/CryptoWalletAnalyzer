@@ -8,7 +8,7 @@ namespace CryptoAnalyzer
 {
     public class CsvOutput : IOutput
     {
-        public void WriteFile(string pathName, string fileName, List<TokenOutputDto> list, string timeElapsed)
+        public void WriteFile(string pathName, string fileName, List<TokenOutputDto> list, string timeElapsed, int nmTxnScraped)
         {
             var fullPath = pathName + '\\' + fileName + ".csv";
 
@@ -20,8 +20,11 @@ namespace CryptoAnalyzer
                 using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                 {
                     csv.Context.RegisterClassMap<TokenOutputDtoMap>();
-                    csv.WriteField("Time elapsed:");
+                    csv.WriteField("Time elapsed: ");
                     csv.WriteField(timeElapsed);
+                    csv.WriteField("");
+                    csv.WriteField("Transactions scraped: ");
+                    csv.WriteField(nmTxnScraped);
                     csv.NextRecord();
                     csv.NextRecord();
                     csv.WriteRecords(list);
