@@ -32,11 +32,11 @@ namespace CryptoAnalyzer
             }
             catch (IOException e)
             {
-                //fix temp add console text
+                throw;
             }
             catch
             {
-                throw;
+                throw; //temp
             }
         }
     }

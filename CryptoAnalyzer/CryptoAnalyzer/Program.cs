@@ -12,7 +12,8 @@ namespace CryptoAnalyzer
     {
         static async Task Main()
         {
-            var nmOfOutputWrite = 0;
+            var nmOfOutputWriten = 0;
+            var outputCouldntWrite = false;
             var appendPeriodInMs = int.Parse(ConfigurationManager.AppSettings.Get("OUTPUT_APPEND_PERIOD_IN_SECONDS")) * 1000;
 
             var stopwatch = new Stopwatch();
@@ -36,8 +37,10 @@ namespace CryptoAnalyzer
 
                 Thread.Sleep(1000);
 
-                if ((nmOfOutputWrite + 1) * appendPeriodInMs < stopwatch.ElapsedMilliseconds)
+                if ((nmOfOutputWriten + 1) * appendPeriodInMs < stopwatch.ElapsedMilliseconds || outputCouldntWrite)
                 {
+                    nmOfOutputWriten++;
+
                     output = new Output().Append(output, allNewTransactions);
                     allNewTransactions.Clear();
 
@@ -47,11 +50,12 @@ namespace CryptoAnalyzer
                     try
                     {
                         new CsvOutput().WriteFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), outputName, output, timeOutput, nmTxnScraped);
-                        nmOfOutputWrite++;
+                        outputCouldntWrite = false;
                     }
                     catch
                     {
-                        //temp add exception handling
+                        Console.WriteLine("Scraped data could not be added. Please close the output file...");
+                        outputCouldntWrite = true;
                     }
                 }
             }
