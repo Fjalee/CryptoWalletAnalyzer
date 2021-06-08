@@ -52,6 +52,8 @@ namespace CryptoAnalyzer
                         new CsvOutput().WriteFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), outputName, output, timeOutput, nmTxnScraped);
                         msWorthOfDataWriten = stopwatch.ElapsedMilliseconds;
 
+                        Console.WriteLine("Have been scraping for " + timeOutput);
+
                         if (outputCouldntWrite)
                         {
                             outputCouldntWrite = false;
