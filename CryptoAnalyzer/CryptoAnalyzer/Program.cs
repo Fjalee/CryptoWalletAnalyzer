@@ -50,7 +50,12 @@ namespace CryptoAnalyzer
                     try
                     {
                         new CsvOutput().WriteFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), outputName, output, timeOutput, nmTxnScraped);
-                        outputCouldntWrite = false;
+
+                        if (outputCouldntWrite)
+                        {
+                            outputCouldntWrite = false;
+                            Console.WriteLine("Output file closed. Scraped data was added SUCCESSFULLY...");
+                        }
                     }
                     catch
                     {
