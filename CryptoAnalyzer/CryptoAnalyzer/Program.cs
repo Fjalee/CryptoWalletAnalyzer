@@ -58,7 +58,7 @@ namespace CryptoAnalyzer
                             Console.WriteLine("Output file closed. Scraped data was added SUCCESSFULLY...");
                         }
 
-                        Console.WriteLine("Appended data worth of scraping for " + timeOutput);
+                        Console.WriteLine("Appended data scraped in" + timeOutput);
                     }
                     catch
                     {
