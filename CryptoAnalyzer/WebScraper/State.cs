@@ -7,6 +7,7 @@ namespace WebScraper
     public static class State
     {
         public static IHtmlDocument CurrentScrapingPageHtml { get; set; }
+        public static string ScrapeDate { get; set; }
 
         public static void ExitAndLog(StackTrace stackTrace)
         {
@@ -14,7 +15,7 @@ namespace WebScraper
 
             try
             {
-                Trace.Write(CurrentScrapingPageHtml.Children[0].OuterHtml);
+                Trace.Write("Scrape date: " + ScrapeDate + "\n" + CurrentScrapingPageHtml.Children[0].OuterHtml);
                 Console.WriteLine("\nERROR: Something went wrong in method " + methodName + "\nHtml page was printed into the log file...");
             }
             catch

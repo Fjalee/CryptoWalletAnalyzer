@@ -14,13 +14,13 @@ namespace CryptoAnalyzer
         {
             Trace.Listeners.Add(new TextWriterTraceListener(ConfigurationManager.AppSettings.Get("LOG_PATH")));
             Trace.AutoFlush = true;
+            State.ScrapeDate = DateTime.Now.ToString("yyyy.MM.dd-HH;mm");
 
             var outputCouldntWrite = false;
             long msWorthOfDataWriten = 0;
             var appendPeriodInMs = int.Parse(ConfigurationManager.AppSettings.Get("OUTPUT_APPEND_PERIOD_IN_SECONDS")) * 1000;
 
             var stopwatch = new Stopwatch();
-            var outputName = DateTime.Now.ToString("yyyy.MM.dd-HH;mm");
             var allNewTransactions = new List<Transaction>();
             var nmTxnScraped = 0;
             var output = new List<TokenOutputDto>();
@@ -51,7 +51,7 @@ namespace CryptoAnalyzer
 
                     try
                     {
-                        new CsvOutput().WriteFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), outputName, output, timeOutput, nmTxnScraped);
+                        new CsvOutput().WriteFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), State.ScrapeDate, output, timeOutput, nmTxnScraped);
                         msWorthOfDataWriten = stopwatch.ElapsedMilliseconds;
 
                         if (outputCouldntWrite)
