@@ -22,12 +22,12 @@ namespace WebScraper
 
         public async Task<List<Transaction>> ScrapePage()
         {
-            State.CurrentScrapingPage = await GetIHtmlDoc(_domainUrl + "/" + _path);
+            State.CurrentScrapingPageHtml = await GetIHtmlDoc(_domainUrl + "/" + _path);
 
-            var txnTable = _parser.ParseTxnTable(State.CurrentScrapingPage);
+            var txnTable = _parser.ParseTxnTable(State.CurrentScrapingPageHtml);
 
             var allTxn = new List<Transaction>();
-            foreach (var row in txnTable.Children)
+            foreach (var row in State.CurrentScrapingPageHtml.Children)
             {
                 allTxn.Add(_parser.ParseTxnRow(row));
             }
