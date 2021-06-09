@@ -46,7 +46,7 @@ namespace WebScraper
             try
             {
                 if (9 != row.Children.Length ||
-                    "has-tag text-truncate" != row.Children[1].Children[0].ClassName)
+                    "hash-tag text-truncate" != row.Children[1].Children[0].ClassName)
                 {
                     State.ExitAndLog(new StackTrace());
                 }
