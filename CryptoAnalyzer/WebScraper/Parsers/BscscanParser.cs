@@ -70,16 +70,25 @@ namespace WebScraper
                 .Where(x => x.LocalName == "noscript")
                 .Where(x => x.Children[0].LocalName == "img")
                 .Select(x => x.Children[0]);
-
             if (imgElements.Count() != 1)
             {
                 throw new Exception(); //fix temp. Warn about exception and stop program
             }
 
             var imgSrc = ((IHtmlImageElement)imgElements.First()).Source;
-            if (imgSrc == "" || imgSrc == null)
+            var baseUrlScheme = ((IHtmlImageElement)imgElements.First()).BaseUrl.Scheme + @"://";
+            if (imgSrc == "" || imgSrc == null || baseUrlScheme == "" || baseUrlScheme == null)
             {
-                throw new Exception();
+                throw new Exception();  //fix temp.
+            }
+
+            if (imgSrc.IndexOf(baseUrlScheme) == 0)
+            {
+                imgSrc = imgSrc.Substring(baseUrlScheme.Length);
+            }
+            else
+            {
+                throw new Exception();  //fix temp.
             }
 
             return imgSrc;
