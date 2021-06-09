@@ -1,8 +1,9 @@
 ﻿using CsvHelper;
-using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using WebScraper;
 
 namespace CryptoAnalyzer
 {
@@ -30,13 +31,13 @@ namespace CryptoAnalyzer
                     csv.WriteRecords(list);
                 }
             }
-            catch (IOException e)
+            catch (IOException)
             {
                 throw;
             }
             catch
             {
-                throw; //temp
+                State.ExitAndLog(new StackTrace());
             }
         }
     }

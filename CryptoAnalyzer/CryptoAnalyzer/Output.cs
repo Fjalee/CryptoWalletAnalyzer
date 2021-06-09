@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using WebScraper;
 
@@ -20,7 +21,7 @@ namespace CryptoAnalyzer
                 {
                     if(existingToken.Known != txn.Known)
                     {
-                        //fix temp add exception hnadiling
+                        State.ExitAndLog(new StackTrace());
                     }
                     else
                     {
@@ -28,7 +29,6 @@ namespace CryptoAnalyzer
                     }
                 }
             }
-
             return current;
         }
     }
