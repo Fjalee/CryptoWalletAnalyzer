@@ -1,4 +1,6 @@
 ﻿using AngleSharp.Html.Dom;
+using System;
+using System.Diagnostics;
 
 namespace WebScraper
 {
@@ -6,20 +8,23 @@ namespace WebScraper
     {
         public static IHtmlDocument CurrentScrapingPageHtml { get; set; }
 
-        public static string CurrentScrapingPageString
+        public static void ExitAndLog(StackTrace stackTrace)
         {
-            get
+            var methodName = stackTrace.GetFrame(0).GetMethod().Name;
+
+            try
             {
-                try
-                {
-                    return CurrentScrapingPageHtml.Children[0].OuterHtml;
-                }
-                catch
-                {
-                    System.Console.WriteLine("ERROR: Could not get OuterHtml of the page...");
-                    return "";
-                }
+                Trace.Write(CurrentScrapingPageHtml.Children[0].OuterHtml);
+                Console.WriteLine("\nERROR: Something went wrong in method " + methodName + "\nHtml page was printed into the log file...");
             }
+            catch
+            {
+                Console.WriteLine("\nERROR: Could not get OuterHtml of the page...");
+            }
+
+            Console.WriteLine("Press any key to exit...");
+            Console.Read();
+            Environment.Exit(0);
         }
     }
 }

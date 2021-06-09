@@ -1,6 +1,7 @@
 ﻿using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace WebScraper
@@ -45,9 +46,9 @@ namespace WebScraper
             try
             {
                 if (9 != row.Children.Length ||
-                    "has-tag text-truncate" != row.Children[1].Children[0].ClassName)
+                    "has-tag text-truncatee" != row.Children[1].Children[0].ClassName)
                 {
-                    new Exception(); //fix temp. Warn about exception and stop program
+                    State.ExitAndLog(new StackTrace());
                 }
 
                 transaction.Known = ParseImgSrc(row) != _unknownTokenImg;
@@ -58,7 +59,7 @@ namespace WebScraper
             }
             catch
             {
-                throw new Exception(); //fix temp. Warn about exception and stop program
+                State.ExitAndLog();
             }
 
             return transaction;
@@ -72,14 +73,14 @@ namespace WebScraper
                 .Select(x => x.Children[0]);
             if (imgElements.Count() != 1)
             {
-                throw new Exception(); //fix temp. Warn about exception and stop program
+                State.ExitAndLog();
             }
 
             var imgSrc = ((IHtmlImageElement)imgElements.First()).Source;
             var baseUrlScheme = ((IHtmlImageElement)imgElements.First()).BaseUrl.Scheme + @"://";
             if (imgSrc == "" || imgSrc == null || baseUrlScheme == "" || baseUrlScheme == null)
             {
-                throw new Exception();  //fix temp.
+                State.ExitAndLog();
             }
 
             if (imgSrc.IndexOf(baseUrlScheme) == 0)
@@ -88,7 +89,7 @@ namespace WebScraper
             }
             else
             {
-                throw new Exception();  //fix temp.
+                State.ExitAndLog();
             }
 
             return imgSrc;
