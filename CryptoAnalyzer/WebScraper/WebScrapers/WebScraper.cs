@@ -27,7 +27,7 @@ namespace WebScraper
             var txnTable = _parser.ParseTxnTable(State.CurrentScrapingPageHtml);
 
             var allTxn = new List<Transaction>();
-            foreach (var row in State.CurrentScrapingPageHtml.Children)
+            foreach (var row in txnTable.Children)
             {
                 allTxn.Add(_parser.ParseTxnRow(row));
             }
