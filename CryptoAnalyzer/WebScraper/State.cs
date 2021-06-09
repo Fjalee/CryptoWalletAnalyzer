@@ -15,7 +15,7 @@ namespace WebScraper
 
             try
             {
-                Trace.Write("Scrape date: " + ScrapeDate + "\n" + CurrentScrapingPageHtml.Children[0].OuterHtml);
+                Trace.WriteLine("\nScrape date: " + ScrapeDate + "\n" + CurrentScrapingPageHtml.Children[0].OuterHtml);
                 Console.WriteLine("\nERROR: Something went wrong in method " + methodName + "\nHtml page was printed into the log file...");
             }
             catch
