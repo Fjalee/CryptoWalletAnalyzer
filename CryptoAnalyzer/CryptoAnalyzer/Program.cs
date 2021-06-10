@@ -19,6 +19,7 @@ namespace CryptoAnalyzer
             var outputCouldntWrite = false;
             long msWorthOfDataWriten = 0;
             var appendPeriodInMs = int.Parse(ConfigurationManager.AppSettings.Get("OUTPUT_APPEND_PERIOD_IN_SECONDS")) * 1000;
+            var sleepTime = int.Parse(ConfigurationManager.AppSettings.Get("SLEEP_TIME_IN_MILISECONDS"));
 
             var stopwatch = new Stopwatch();
             var allNewTransactions = new List<Transaction>();
@@ -37,7 +38,7 @@ namespace CryptoAnalyzer
                 allNewTransactions.AddRange(pageTransactions);
                 nmTxnScraped += pageTransactions.Count;
 
-                Thread.Sleep(1000);
+                Thread.Sleep(sleepTime);
 
                 if (msWorthOfDataWriten + appendPeriodInMs < stopwatch.ElapsedMilliseconds
                     || outputCouldntWrite)
