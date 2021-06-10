@@ -14,7 +14,7 @@ namespace CryptoAnalyzer
         {
             Trace.Listeners.Add(new TextWriterTraceListener(ConfigurationManager.AppSettings.Get("LOG_PATH")));
             Trace.AutoFlush = true;
-            State.ScrapeDate = DateTime.Now.ToString("yyyy.MM.dd-HH;mm");
+            State.ScrapeDate = DateTime.Now.ToString("yyyy_MM_dd_HHmm");
 
             var outputCouldntWrite = false;
             long msWorthOfDataWriten = 0;
