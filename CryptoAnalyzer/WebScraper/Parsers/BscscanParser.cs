@@ -1,6 +1,7 @@
 ﻿using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace WebScraper
@@ -25,14 +26,14 @@ namespace WebScraper
                     "tbody" != page.Body.Children[0].Children[1].Children[5].Children[0].Children[0].Children[1].Children[0].Children[1].LocalName
                     )
                 {
-                    new Exception(); //fix temp. Warn about exception and stop program
+                    State.ExitAndLog(new StackTrace());
                 }
 
                 transactionsTable = page.Body.Children[0].Children[1].Children[5].Children[0].Children[0].Children[1].Children[0].Children[1];
             }
             catch
             {
-                new Exception(); //fix temp. Warn about exception and stop program
+                State.ExitAndLog(new StackTrace());
             }
 
             return transactionsTable;
@@ -45,20 +46,19 @@ namespace WebScraper
             try
             {
                 if (9 != row.Children.Length ||
-                    "has-tag text-truncate" != row.Children[1].Children[0].ClassName)
+                    "hash-tag text-truncate" != row.Children[1].Children[0].ClassName)
                 {
-                    new Exception(); //fix temp. Warn about exception and stop program
+                    State.ExitAndLog(new StackTrace());
                 }
 
                 transaction.Known = ParseImgSrc(row) != _unknownTokenImg;
                 transaction.Token = ParseToken(row);
                 transaction.TxnHash = ParseTxnHash(row);
                 transaction.ValueInfo = ParseValue(row);
-                //transaction.Element = row; //fix temp for debugging remove when done
             }
             catch
             {
-                throw new Exception(); //fix temp. Warn about exception and stop program
+                State.ExitAndLog(new StackTrace());
             }
 
             return transaction;
@@ -72,14 +72,14 @@ namespace WebScraper
                 .Select(x => x.Children[0]);
             if (imgElements.Count() != 1)
             {
-                throw new Exception(); //fix temp. Warn about exception and stop program
+                State.ExitAndLog(new StackTrace());
             }
 
             var imgSrc = ((IHtmlImageElement)imgElements.First()).Source;
             var baseUrlScheme = ((IHtmlImageElement)imgElements.First()).BaseUrl.Scheme + @"://";
             if (imgSrc == "" || imgSrc == null || baseUrlScheme == "" || baseUrlScheme == null)
             {
-                throw new Exception();  //fix temp.
+                State.ExitAndLog(new StackTrace());
             }
 
             if (imgSrc.IndexOf(baseUrlScheme) == 0)
@@ -88,7 +88,7 @@ namespace WebScraper
             }
             else
             {
-                throw new Exception();  //fix temp.
+                State.ExitAndLog(new StackTrace());
             }
 
             return imgSrc;
@@ -105,7 +105,7 @@ namespace WebScraper
 
             if (token == "" || token == null)
             {
-                throw new Exception();
+                State.ExitAndLog(new StackTrace());
             }
 
             return token.Substring(1); // space at the start
@@ -116,7 +116,7 @@ namespace WebScraper
             var txnHash = row.Children[1].Children[0].TextContent;
             if (txnHash == "" || txnHash == null)
             {
-                throw new Exception();
+                State.ExitAndLog(new StackTrace());
             }
 
             return txnHash;
@@ -130,7 +130,7 @@ namespace WebScraper
 
                 if (scrapedValString == "" || scrapedValString == null)
                 {
-                    throw new Exception();
+                    State.ExitAndLog(new StackTrace());
                 }
 
                 if (scrapedValString.Contains("..."))
@@ -145,9 +145,10 @@ namespace WebScraper
 
                 return new TokenValueInfo(Convert.ToDouble(scrapedValString), false);
             }
-            catch (Exception)
+            catch
             {
-                throw; //fix temp. Warn about exception and stop program
+                State.ExitAndLog(new StackTrace());
+                return null;
             }
         }
     }
