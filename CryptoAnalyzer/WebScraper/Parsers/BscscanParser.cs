@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace WebScraper
 {
-    public class BscscanParser : Parser
+    public class BscscanParser : ParserCommon
     {
         public BscscanParser(string unknownTokenImg) : base(unknownTokenImg) { }
 
