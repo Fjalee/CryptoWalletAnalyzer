@@ -10,6 +10,9 @@ namespace CryptoAnalyzer
 {
     public class Program
     {
+        //Legacy, needs to be refractored
+
+        /*
         static async Task Main()
         {
             Trace.Listeners.Add(new TextWriterTraceListener(ConfigurationManager.AppSettings.Get("LOG_PATH")));
@@ -71,5 +74,6 @@ namespace CryptoAnalyzer
                 }
             }
         }
+    */
     }
 }

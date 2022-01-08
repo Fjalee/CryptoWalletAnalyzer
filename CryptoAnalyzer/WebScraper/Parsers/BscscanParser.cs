@@ -1,4 +1,6 @@
-﻿using AngleSharp.Dom;
+﻿//Legacy, needs to be refractored
+
+/*using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using System;
 using System.Diagnostics;
@@ -145,4 +147,4 @@ namespace WebScraper
             }
         }
     }
-}
+}*/
