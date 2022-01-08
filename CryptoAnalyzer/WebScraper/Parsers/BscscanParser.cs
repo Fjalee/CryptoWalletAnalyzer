@@ -12,31 +12,24 @@ namespace WebScraper
 
         override public IElement ParseTxnTable(IHtmlDocument page)
         {
-            IElement transactionsTable = null;
-
+            var current = page.Body.Children[0];
             try
             {
-                if ("wrapper" != page.Body.Children[0].ClassName ||
-                    "main" != page.Body.Children[0].Children[1].LocalName ||
-                    "container space-bottom-2" != page.Body.Children[0].Children[1].Children[5].ClassName ||
-                    "card" != page.Body.Children[0].Children[1].Children[5].Children[0].ClassName ||
-                    "card-body" != page.Body.Children[0].Children[1].Children[5].Children[0].Children[0].ClassName ||
-                    "table-responsive mb-2 mb-md-0" != page.Body.Children[0].Children[1].Children[5].Children[0].Children[0].Children[1].ClassName ||
-                    "table table-hover" != page.Body.Children[0].Children[1].Children[5].Children[0].Children[0].Children[1].Children[0].ClassName ||
-                    "tbody" != page.Body.Children[0].Children[1].Children[5].Children[0].Children[0].Children[1].Children[0].Children[1].LocalName
-                    )
-                {
-                    State.ExitAndLog(new StackTrace());
-                }
-
-                transactionsTable = page.Body.Children[0].Children[1].Children[5].Children[0].Children[0].Children[1].Children[0].Children[1];
+                StepIfMatches(ref current, "wrapper", current.ClassName, current.Children[1]);
+                StepIfMatches(ref current, "main", current.LocalName, current.Children[5]);
+                StepIfMatches(ref current, "container space-bottom-2", current.ClassName, current.Children[0]);
+                StepIfMatches(ref current, "card", current.ClassName, current.Children[0]);
+                StepIfMatches(ref current, "card-body", current.ClassName, current.Children[1]);
+                StepIfMatches(ref current, "table-responsive mb-2 mb-md-0", current.ClassName, current.Children[0]);
+                StepIfMatches(ref current, "table table-hover", current.ClassName, current.Children[1]);
+                StepIfMatches(ref current, "tbody", current.LocalName, current);
             }
             catch
             {
                 State.ExitAndLog(new StackTrace());
             }
 
-            return transactionsTable;
+            return current;
         }
 
         override public Transaction ParseTxnRow(IElement row)
