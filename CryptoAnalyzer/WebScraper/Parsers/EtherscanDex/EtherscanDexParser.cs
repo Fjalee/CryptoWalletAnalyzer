@@ -1,8 +1,8 @@
 ﻿using WebScraper.WebScrapers;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
-using System;
 using System.Diagnostics;
+using System;
 
 namespace WebScraper.Parsers
 {
@@ -17,14 +17,11 @@ namespace WebScraper.Parsers
 
         public IElement GetTable(IHtmlDocument page)
         {
-            var current = page.Body.Children[0];
+            IElement current = null;
             try
             {
-                _parserCommon.StepIfMatches(ref current, "wrapper", current.ClassName, current.Children[1]);
-                _parserCommon.StepIfMatches(ref current, "main", current.LocalName, current.Children[5]);
-                _parserCommon.StepIfMatches(ref current, "container space-bottom-2", current.ClassName, current.Children[0]);
-                _parserCommon.StepIfMatches(ref current, "card", current.ClassName, current.Children[0]);
-                _parserCommon.StepIfMatches(ref current, "card-body", current.ClassName, current.Children[1]);
+                current = page.Body.Children[10];
+                _parserCommon.StepIfMatches(ref current, "doneloadingframe", current.Id, current.Children[2]);
                 _parserCommon.StepIfMatches(ref current, "table-responsive mb-2 mb-md-0", current.ClassName, current.Children[0]);
                 _parserCommon.StepIfMatches(ref current, "table table-hover", current.ClassName, current.Children[1]);
                 _parserCommon.StepIfMatches(ref current, "tbody", current.LocalName, current);
@@ -43,14 +40,13 @@ namespace WebScraper.Parsers
 
             try
             {
-                if (9 != rowHtml.Children.Length ||
-                    "hash-tag text-truncate" != rowHtml.Children[1].Children[0].ClassName)
+                if (10 != rowHtml.Children.Length)
                 {
                     State.ExitAndLog(new StackTrace());
                 }
 
-                /* row.TxnDate = 
-                row.For = */
+                row.TxnDate = ParseDate(rowHtml);
+                row.IsBuy = ParseIsBuy(rowHtml);
             }
             catch
             {
@@ -59,36 +55,25 @@ namespace WebScraper.Parsers
 
             return row;
         }
-        /*
-        override protected TokenValueInfo ParseValue(IElement row)
+
+        private DateTime ParseDate(IElement rowHtml)
         {
-            try
-            {
-                var scrapedValString = row.Children[7].TextContent;
-
-                if (scrapedValString == "" || scrapedValString == null)
-                {
-                    State.ExitAndLog(new StackTrace());
-                }
-
-                if (scrapedValString.Contains("..."))
-                {
-                    scrapedValString = scrapedValString.Replace("...", String.Empty);
-
-                    if (!scrapedValString.Contains('.'))
-                    {
-                        return new TokenValueInfo(Convert.ToDouble(scrapedValString), true);
-                    }
-                }
-
-                return new TokenValueInfo(Convert.ToDouble(scrapedValString), false);
-            }
-            catch
-            {
-                State.ExitAndLog(new StackTrace());
-                return null;
-            }
+            var dateRow = rowHtml.Children[2];
+            var parsedTxnDate = _parserCommon.GetDataIfMatches(dateRow.Children[0].InnerHtml, "showDate ", dateRow.ClassName);
+            return DateTime.Parse(parsedTxnDate);
         }
-        */
+
+        private bool ParseIsBuy(IElement rowHtml)
+        {
+            var isBuyRow = rowHtml.Children[4];
+            var parsedAction = _parserCommon.GetDataIfMatches(isBuyRow.Children[0].InnerHtml, "span", isBuyRow.Children[0].LocalName);
+
+            if (parsedAction != "Buy" && parsedAction != "Sell")
+            {
+                throw new InvalidOperationException($"row Action was expected to be equal to Buy or Sell");
+            }
+
+            return parsedAction == "Buy";
+        }
     }
 }

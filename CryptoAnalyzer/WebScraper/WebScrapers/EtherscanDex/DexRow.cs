@@ -6,6 +6,6 @@ namespace WebScraper.WebScrapers
     public class DexRow : IRow
     {
         public DateTime TxnDate { get; set; }
-        public string For { get; set; }
+        public bool IsBuy { get; set; }
     }
 }

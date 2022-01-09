@@ -15,5 +15,14 @@ namespace WebScraper
             }
             current = nextStep;
         }
+
+        public string GetDataIfMatches(string result, string actualAttribute, string expectedAttribute)
+        {
+            if (expectedAttribute != actualAttribute)
+            {
+                throw new InvalidOperationException($"attribute {actualAttribute} was expected to be equal to {expectedAttribute}");
+            }
+            return result;
+        }
     }
 }
