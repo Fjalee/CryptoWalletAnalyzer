@@ -34,7 +34,7 @@ namespace WebScraper.Parsers
             return current;
         }
 
-        public IRow ParseRow(IElement rowHtml) //fix doesnt work
+        public IRow ParseRow(IElement rowHtml)
         {
             var row = new DexRow();
 
