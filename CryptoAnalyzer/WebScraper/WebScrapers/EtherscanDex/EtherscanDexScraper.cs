@@ -17,7 +17,7 @@ namespace WebScraper.WebScrapers
 
         public async Task<List<IRow>> ScrapeTable(string url)
         {
-            var page = await _webScraper.GetPage(url); //_domainUrl + "/" + _path
+            var page = await _webScraper.GetPage(url);
             State.CurrentScrapingPageHtml = page;
 
             var table = _parser.GetTable(page);

@@ -3,6 +3,7 @@ using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using System.Diagnostics;
 using System;
+using WebScraper.WebScrapers.EtherscanDex;
 
 namespace WebScraper.Parsers
 {
@@ -46,9 +47,9 @@ namespace WebScraper.Parsers
                 }
 
                 row.TxnDate = ParseDate(rowHtml);
-                row.IsBuy = ParseIsBuy(rowHtml);
+                row.Action = ParseAction(rowHtml);
             }
-            catch
+            catch(Exception e)
             {
                 State.ExitAndLog(new StackTrace());
             }
@@ -63,17 +64,21 @@ namespace WebScraper.Parsers
             return DateTime.Parse(parsedTxnDate);
         }
 
-        private bool ParseIsBuy(IElement rowHtml)
+        private DexAction ParseAction(IElement rowHtml)
         {
             var isBuyRow = rowHtml.Children[4];
-            var parsedAction = _parserCommon.GetDataIfMatches(isBuyRow.Children[0].InnerHtml, "span", isBuyRow.Children[0].LocalName);
+            var parsedAction = isBuyRow.Children.Length == 0 ?
+                _parserCommon.GetDataIfMatches(isBuyRow.InnerHtml, "td", isBuyRow.LocalName) :
+                _parserCommon.GetDataIfMatches(isBuyRow.Children[0].InnerHtml, "span", isBuyRow.Children[0].LocalName);
 
-            if (parsedAction != "Buy" && parsedAction != "Sell")
+
+            var successfulParse = Enum.TryParse(parsedAction, out DexAction result);
+            if (!successfulParse)
             {
                 throw new InvalidOperationException($"row Action was expected to be equal to Buy or Sell");
             }
-
-            return parsedAction == "Buy";
+            
+            return result;
         }
     }
 }
