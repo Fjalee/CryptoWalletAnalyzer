@@ -4,7 +4,7 @@ using WebScraper.Parsers;
 
 namespace WebScraper.WebScrapers
 {
-    public class EtherscanDexScraper : IEtherscanDexScraper
+    public class EtherscanDexScraper : IDexScraper
     {
         private readonly ITableParser _parser;
         private readonly IWebScraper _webScraper;
@@ -15,17 +15,18 @@ namespace WebScraper.WebScrapers
             _webScraper = webScraper;
         }
 
-        public async Task<List<IRow>> ScrapeTable(string url)
+        public async Task<List<DexRow>> ScrapeTable(string url)
         {
             var page = await _webScraper.GetPage(url);
             State.CurrentScrapingPageHtml = page;
 
             var table = _parser.GetTable(page);
 
-            var allRows = new List<IRow>();
+            var allRows = new List<DexRow>();
             foreach (var row in table.Children)
             {
-                allRows.Add(_parser.ParseRow(row));
+                var newRows = _parser.ParseRow(row);
+                allRows.Add((DexRow)newRows); //fix, should convert like that
             }
 
             return allRows;

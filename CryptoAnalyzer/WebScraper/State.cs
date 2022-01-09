@@ -8,7 +8,6 @@ namespace WebScraper
     {
         public static IHtmlDocument CurrentScrapingPageHtml { get; set; }
         public static string ScrapeDate { get; set; }
-
         public static void ExitAndLog(StackTrace stackTrace)
         {
             var methodName = stackTrace.GetFrame(0).GetMethod().Name;
