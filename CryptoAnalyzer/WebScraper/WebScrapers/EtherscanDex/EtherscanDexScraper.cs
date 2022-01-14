@@ -37,5 +37,10 @@ namespace WebScraper.WebScrapers
 
             return allRows;
         }
+
+        public void GoToNextPage()
+        {
+            _currentPageUrl += "&p=2";
+        }
     }
 }
