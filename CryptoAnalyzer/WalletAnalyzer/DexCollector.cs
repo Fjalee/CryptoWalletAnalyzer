@@ -4,12 +4,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using WebScraper.Parsers;
 using WebScraper.WebScrapers;
 
 namespace WalletAnalyzer
 {
-    public class DexCollector
+    public class DexCollector : IDexCollector
     {
         private readonly IDexScraper _scraper;
         private readonly IDexOutput _dexOutput;

@@ -7,23 +7,21 @@ using System.Threading;
 using System.Threading.Tasks;
 using WebScraper;
 using WebScraper.Parsers;
-using WebScraper.WebScrapers;
-
 namespace WalletAnalyzer
 {
     public class Program
     {
         static async Task Main()
         {
-            var scraper = new EtherscanDexScraper(new EtherscanDexParser(new ParserCommon()), new WebScraper.WebScraper());
-            var config = new ConfigurationBuilder().AddJsonFile(@"appsettings.json").Build();
-            var output = new DexCsvOutput(config);
+            DI.Initialize();
+            var config = DI.Create<IConfiguration>();
+            var dexCollector = DI.Create<IDexCollector>();
 
             var url = @"https://etherscan.io/dextracker_txns?q=0x6b3595068778dd592e39a122f4f5a5cf09c90fe2";
             var sleepTimeMs = Int32.Parse(config["SLEEP-TIME-IN-MILISECONDS"]);
             var appendPeriodInMs = Int32.Parse(config.GetSection("OUTPUT")["APPEND-PERIOD-IN-SECONDS"]);
 
-            await new DexCollector(scraper, output).Start(url, sleepTimeMs, appendPeriodInMs);
+            await dexCollector.Start(url, sleepTimeMs, appendPeriodInMs);
         }
     }
 
