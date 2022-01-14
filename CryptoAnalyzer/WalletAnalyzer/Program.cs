@@ -39,7 +39,8 @@ namespace WalletAnalyzer
                 .AddTransient<IWebScraper, WebScraper.WebScraper>()
                 .AddTransient<IDexTableParser, EtherscanDexParser>()
                 .AddTransient<IDexScraper, EtherscanDexScraper>()
-                .AddTransient<IDexCollector, DexCollector>();
+                .AddTransient<IDexCollector, DexCollector>()
+                .AddTransient<IDexScraperFactory, DexScraperFactory>();
         }
 
         private static IConfiguration SetupConfiguration()

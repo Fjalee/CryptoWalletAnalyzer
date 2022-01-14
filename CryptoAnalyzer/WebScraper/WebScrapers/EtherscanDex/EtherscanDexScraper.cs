@@ -8,6 +8,7 @@ namespace WebScraper.WebScrapers
     {
         private readonly IDexTableParser _dexParser;
         private readonly IWebScraper _webScraper;
+        private string _currentPageUrl;
 
         public EtherscanDexScraper(IDexTableParser parser, IWebScraper webScraper)
         {
@@ -15,9 +16,14 @@ namespace WebScraper.WebScrapers
             _webScraper = webScraper;
         }
 
-        public async Task<List<DexRow>> ScrapeTable(string url)
+        public void Initialize(string url)
         {
-            var page = await _webScraper.GetPage(url);
+            _currentPageUrl = url;
+        }
+
+        public async Task<List<DexRow>> ScrapeCurrentPageTable()
+        {
+            var page = await _webScraper.GetPage(_currentPageUrl);
             State.CurrentScrapingPageHtml = page;
 
             var table = _dexParser.GetTable(page);

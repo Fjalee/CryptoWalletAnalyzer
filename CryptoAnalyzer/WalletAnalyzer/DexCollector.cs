@@ -11,7 +11,7 @@ namespace WalletAnalyzer
 {
     public class DexCollector : IDexCollector
     {
-        private readonly IDexScraper _scraper;
+        private readonly IDexScraperFactory _dexScrapperFactory;
         private readonly IDexOutput _dexOutput;
         private readonly IMapper _mapper;
         private List<DexRow> _allNewRows = new List<DexRow>();
@@ -24,9 +24,9 @@ namespace WalletAnalyzer
         private string _scrapeStartDate;
 
 
-        public DexCollector(IDexScraper scraper, IDexOutput dexOutput, IMapper mapper)
+        public DexCollector(IDexScraperFactory dexScraperFactory, IDexOutput dexOutput, IMapper mapper)
         {
-            _scraper = scraper;
+            _dexScrapperFactory = dexScraperFactory;
             _dexOutput = dexOutput;
             _mapper = mapper;
         }
@@ -34,13 +34,14 @@ namespace WalletAnalyzer
         public async Task Start(string url, int sleepTimeMs, int appendPeriodInMs)
         {
             _scrapeStartDate = DateTime.Now.ToString("yyyy_MM_dd_HHmm");
+            var dexScrapper = _dexScrapperFactory.CreateScrapper(url);
             //Trace.Listeners.Add(new TextWriterTraceListener(ConfigurationManager.AppSettings.Get("LOG_PATH")));
             //Trace.AutoFlush = true;
 
             _stopwatch.Start();
             while (true)
             {
-                var pageRows = await _scraper.ScrapeTable(url);
+                var pageRows = await dexScrapper.ScrapeCurrentPageTable();
                 _allNewRows.AddRange(pageRows);
                 _totalRowsScraped += pageRows.Count;
 
@@ -51,6 +52,8 @@ namespace WalletAnalyzer
                 {
                     TryOutput();
                 }
+
+                dexScrapper.GoToNextPage();
             }
         }
 
