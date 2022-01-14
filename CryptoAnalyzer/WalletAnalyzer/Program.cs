@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using WalletAnalyzer.TemporaryTesting;
 using WebScraper;
 using WebScraper.Parsers;
 using WebScraper.WebScrapers;
@@ -37,6 +38,7 @@ namespace WalletAnalyzer
                 .AddTransient<IDexOutput, DexCsvOutput>()
                 .AddTransient<IParserCommon, ParserCommon>()
                 .AddTransient<IWebScraper, WebScraper.WebScraper>()
+                //.AddTransient<IWebScraper, MockWebScraper>()
                 .AddTransient<IDexTableParser, EtherscanDexParser>()
                 .AddTransient<IDexScraper, EtherscanDexScraper>()
                 .AddTransient<IDexCollector, DexCollector>()
