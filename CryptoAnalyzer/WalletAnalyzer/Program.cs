@@ -21,7 +21,7 @@ namespace WalletAnalyzer
             var dexCollector = serviceProvider.GetService<IDexCollector>();
             var config = serviceProvider.GetService<IConfiguration>();
 
-            var url = @"https://etherscan.io/dextracker_txns?q=0x6b3595068778dd592e39a122f4f5a5cf09c90fe2";
+            var url = @"https://etherscan.io/dextracker_txns?q=0x6b3595068778dd592e39a122f4f5a5cf09c90fe2&ps=100";
             var sleepTimeMs = Int32.Parse(config["SLEEP-TIME-IN-MILISECONDS"]);
             var appendPeriodInMs = Int32.Parse(config.GetSection("OUTPUT")["APPEND-PERIOD-IN-SECONDS"]);
 
