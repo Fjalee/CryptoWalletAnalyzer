@@ -31,6 +31,8 @@ namespace WalletAnalyzer
                 using (var writer = new StreamWriter(fullPath))
                 using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                 {
+                    csv.WriteField("sep=,");
+                    csv.NextRecord();
                     csv.Context.RegisterClassMap<DexOutputDtoMap>();
                     csv.WriteField("Time elapsed: ");
                     csv.WriteField(timeElapsed);
