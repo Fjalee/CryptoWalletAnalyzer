@@ -9,6 +9,7 @@ namespace WebScraper.WebScrapers
         private readonly IDexTableParser _dexParser;
         private readonly IWebScraper _webScraper;
         private string _currentPageUrl;
+        private int _currentPageNumber = 1;
 
         public EtherscanDexScraper(IDexTableParser parser, IWebScraper webScraper)
         {
@@ -40,7 +41,8 @@ namespace WebScraper.WebScrapers
 
         public void GoToNextPage()
         {
-            _currentPageUrl += "&p=2";
+            _currentPageNumber++;
+            _currentPageUrl += $"&p={_currentPageNumber}";
         }
     }
 }
