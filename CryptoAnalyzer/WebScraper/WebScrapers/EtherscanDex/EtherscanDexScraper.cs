@@ -6,12 +6,12 @@ namespace WebScraper.WebScrapers
 {
     public class EtherscanDexScraper : IDexScraper
     {
-        private readonly ITableParser _parser;
+        private readonly IDexTableParser _dexParser;
         private readonly IWebScraper _webScraper;
 
-        public EtherscanDexScraper(ITableParser parser, IWebScraper webScraper)
+        public EtherscanDexScraper(IDexTableParser parser, IWebScraper webScraper)
         {
-            _parser = parser;
+            _dexParser = parser;
             _webScraper = webScraper;
         }
 
@@ -20,13 +20,13 @@ namespace WebScraper.WebScrapers
             var page = await _webScraper.GetPage(url);
             State.CurrentScrapingPageHtml = page;
 
-            var table = _parser.GetTable(page);
+            var table = _dexParser.GetTable(page);
 
             var allRows = new List<DexRow>();
             foreach (var row in table.Children)
             {
-                var newRows = _parser.ParseRow(row);
-                allRows.Add((DexRow)newRows); //fix, should convert like that
+                var newRows = _dexParser.ParseRow(row);
+                allRows.Add(newRows);
             }
 
             return allRows;

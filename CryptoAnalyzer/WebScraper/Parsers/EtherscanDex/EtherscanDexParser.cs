@@ -7,7 +7,7 @@ using WebScraper.WebScrapers.EtherscanDex;
 
 namespace WebScraper.Parsers
 {
-    public class EtherscanDexParser : ITableParser
+    public class EtherscanDexParser : IDexTableParser
     {
         private readonly IParserCommon _parserCommon;
 
@@ -35,7 +35,7 @@ namespace WebScraper.Parsers
             return current;
         }
 
-        public IRow ParseRow(IElement rowHtml)
+        public DexRow ParseRow(IElement rowHtml)
         {
             var row = new DexRow();
 

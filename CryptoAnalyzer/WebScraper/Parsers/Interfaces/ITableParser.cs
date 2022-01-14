@@ -1,11 +1,12 @@
 ﻿using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
+using WebScraper.WebScrapers;
 
 namespace WebScraper.Parsers
 {
-    public interface ITableParser
+    public interface IDexTableParser
     {
         public IElement GetTable(IHtmlDocument page);
-        public IRow ParseRow(IElement rowHtml);
+        public DexRow ParseRow(IElement rowHtml);
     }
 }
