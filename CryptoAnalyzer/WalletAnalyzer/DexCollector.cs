@@ -1,4 +1,5 @@
-﻿using CryptoAnalyzer;
+﻿using AutoMapper;
+using CryptoAnalyzer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,7 +13,7 @@ namespace WalletAnalyzer
     {
         private readonly IDexScraper _scraper;
         private readonly IDexOutput _dexOutput;
-
+        private readonly IMapper _mapper;
         private List<DexRow> _allNewRows = new List<DexRow>();
         private List<DexRow> _allOutputHistory = new List<DexRow>();
         private readonly Stopwatch _stopwatch = new Stopwatch();
@@ -23,10 +24,11 @@ namespace WalletAnalyzer
         private string _scrapeStartDate;
 
 
-        public DexCollector(IDexScraper scraper, IDexOutput dexOutput)
+        public DexCollector(IDexScraper scraper, IDexOutput dexOutput, IMapper mapper)
         {
             _scraper = scraper;
             _dexOutput = dexOutput;
+            _mapper = mapper;
         }
 
         public async Task Start(string url, int sleepTimeMs, int appendPeriodInMs)
@@ -62,7 +64,7 @@ namespace WalletAnalyzer
 
             try
             {
-                var output = TempOutputMap(_allOutputHistory);//fix use automapper
+                var output = _mapper.Map<List<DexOutputDto>>(_allOutputHistory);
                 _dexOutput.DoOutput(_scrapeStartDate, output, timeOutput, _totalRowsScraped);
                 //new CsvOutput().WriteFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), State.ScrapeDate, output, timeOutput, totalRowsScraped);
                 _msWorthOfDataOutputed = _stopwatch.ElapsedMilliseconds;
@@ -80,21 +82,6 @@ namespace WalletAnalyzer
                 _isNeededSaveAsap = true;
                 Console.WriteLine("Scraped data could not be added. Please close the output file...");
             }
-
-        }
-
-        private List<DexOutputDto> TempOutputMap(List<DexRow> from)
-        {
-            var result = new List<DexOutputDto>();
-            foreach (var item in from)
-            {
-                result.Add(new DexOutputDto()
-                {
-                    TxnDate = item.TxnDate,
-                    Action = item.Action
-                });
-            }
-            return result;
         }
     }
 }

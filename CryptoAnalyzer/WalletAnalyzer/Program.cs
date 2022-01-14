@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace WalletAnalyzer
             ConfigureServices(services);
             var serviceProvider = services.BuildServiceProvider();
 
-            var dexCollector = serviceProvider.GetService<DexCollector>();
+            var dexCollector = serviceProvider.GetService<IDexCollector>();
             var config = serviceProvider.GetService<IConfiguration>();
 
             var url = @"https://etherscan.io/dextracker_txns?q=0x6b3595068778dd592e39a122f4f5a5cf09c90fe2";
@@ -35,6 +36,9 @@ namespace WalletAnalyzer
         {
             services
                 .AddSingleton<IConfiguration>(SetupConfiguration())
+                .AddAutoMapper(typeof(Program));
+
+            services
                 .AddTransient<IDexOutput, DexCsvOutput>()
                 .AddTransient<IParserCommon, ParserCommon>()
                 .AddTransient<IWebScraper, WebScraper.WebScraper>()
