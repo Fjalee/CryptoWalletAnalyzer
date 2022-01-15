@@ -55,8 +55,8 @@ namespace WebScraper.Parsers
 
                 var txnDetails = await _etherscanApiServices.GetTransactionDetailsAsync(row.TxnHash);
 
-                row.SellerHash = txnDetails.From;
-                row.BuyerHash = txnDetails.To;
+                row.SellerHash = txnDetails?.From ?? "";
+                row.BuyerHash = txnDetails?.To ?? "";
             }
             catch(Exception e)
             {
