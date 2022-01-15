@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace WalletAnalyzer
+namespace WebScraper
 {
     public interface IEtherscanApiServices
     {

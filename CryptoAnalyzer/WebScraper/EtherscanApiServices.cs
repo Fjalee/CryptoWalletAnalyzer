@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace WalletAnalyzer
+namespace WebScraper
 {
     public class EtherscanApiServices : IEtherscanApiServices
     {
@@ -15,7 +15,7 @@ namespace WalletAnalyzer
         {
             var apiUrl = config.GetSection("BLOCKCHAINS").GetSection("ETHERSCAN")["API"];
             _baseUri = new Uri(apiUrl);
-            _apiKey = "my_api_key"; // fix, this should be kept as github secret
+            _apiKey = "api_key"; // fix, this should be kept as github secret
         }
 
         public async Task<TransactionDetails> GetTransactionDetailsAsync(string txnHash)

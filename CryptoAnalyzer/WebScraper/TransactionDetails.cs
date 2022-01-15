@@ -1,4 +1,4 @@
-﻿namespace WalletAnalyzer
+﻿namespace WebScraper
 {
     public class TransactionDetails
     {
