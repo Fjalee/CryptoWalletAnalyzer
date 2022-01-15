@@ -8,8 +8,8 @@ namespace WalletAnalyzer
 {
     public class EtherscanApiServices : IEtherscanApiServices
     {
-        private Uri _baseUri;
-        private string _apiKey;
+        private readonly Uri _baseUri;
+        private readonly string _apiKey;
 
         public EtherscanApiServices(IConfiguration config)
         {
