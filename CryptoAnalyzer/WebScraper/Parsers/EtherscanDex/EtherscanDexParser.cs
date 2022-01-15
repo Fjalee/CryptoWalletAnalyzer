@@ -46,6 +46,7 @@ namespace WebScraper.Parsers
                     State.ExitAndLog(new StackTrace());
                 }
 
+                row.TxnHash = ParseTransactionHash(rowHtml);
                 row.TxnDate = ParseDate(rowHtml);
                 row.Action = ParseAction(rowHtml);
             }
@@ -79,6 +80,11 @@ namespace WebScraper.Parsers
             }
             
             return result;
+        }
+        private string ParseTransactionHash(IElement rowHtml)
+        {
+            var dateRow = rowHtml.Children[1].Children[0];
+            return _parserCommon.GetDataIfMatches(dateRow.TextContent, "hash-tag text-truncate myFnExpandBox_searchVal", dateRow.ClassName);
         }
     }
 }
