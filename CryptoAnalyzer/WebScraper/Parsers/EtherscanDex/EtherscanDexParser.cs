@@ -50,10 +50,13 @@ namespace WebScraper.Parsers
                 }
 
                 row.TxnHash = ParseTransactionHash(rowHtml);
+
+                var txnDetailsTask = _etherscanApiServices.GetTransactionDetailsAsync(row.TxnHash);
+
                 row.TxnDate = ParseDate(rowHtml);
                 row.Action = ParseAction(rowHtml);
 
-                var txnDetails = await _etherscanApiServices.GetTransactionDetailsAsync(row.TxnHash);
+                var txnDetails = await txnDetailsTask;
 
                 row.SellerHash = txnDetails?.From ?? "";
                 row.BuyerHash = txnDetails?.To ?? "";
