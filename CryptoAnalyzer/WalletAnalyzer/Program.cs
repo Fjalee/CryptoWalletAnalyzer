@@ -42,7 +42,8 @@ namespace WalletAnalyzer
                 .AddTransient<IDexTableParser, EtherscanDexParser>()
                 .AddTransient<IDexScraper, EtherscanDexScraper>()
                 .AddTransient<IDexCollector, DexCollector>()
-                .AddTransient<IDexScraperFactory, DexScraperFactory>();
+                .AddTransient<IDexScraperFactory, DexScraperFactory>()
+                .AddTransient<IEtherscanApiServices, EtherscanApiServices>();
         }
 
         private static IConfiguration SetupConfiguration()

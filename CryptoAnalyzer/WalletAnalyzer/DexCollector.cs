@@ -37,6 +37,7 @@ namespace WalletAnalyzer
             var dexScrapper = _dexScrapperFactory.CreateScrapper(url);
             //Trace.Listeners.Add(new TextWriterTraceListener(ConfigurationManager.AppSettings.Get("LOG_PATH")));
             //Trace.AutoFlush = true;
+            //fix
 
             _stopwatch.Start();
             while (true)
