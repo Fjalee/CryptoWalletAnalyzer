@@ -33,7 +33,7 @@ namespace WebScraper.WebScrapers
             var allRows = new List<DexRow>();
             foreach (var row in table.Children)
             {
-                var newRows = _dexParser.ParseRow(row);
+                var newRows = await _dexParser.ParseRow(row);
                 allRows.Add(newRows);
             }
 

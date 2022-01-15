@@ -4,16 +4,19 @@ using AngleSharp.Html.Dom;
 using System.Diagnostics;
 using System;
 using WebScraper.WebScrapers.EtherscanDex;
+using System.Threading.Tasks;
 
 namespace WebScraper.Parsers
 {
     public class EtherscanDexParser : IDexTableParser
     {
         private readonly IParserCommon _parserCommon;
+        private readonly IEtherscanApiServices _etherscanApiServices;
 
-        public EtherscanDexParser(IParserCommon parserCommon)
+        public EtherscanDexParser(IParserCommon parserCommon, IEtherscanApiServices etherscanApiServices)
         {
             _parserCommon = parserCommon;
+            _etherscanApiServices = etherscanApiServices;
         }
 
         public IElement GetTable(IHtmlDocument page)
@@ -35,7 +38,7 @@ namespace WebScraper.Parsers
             return current;
         }
 
-        public DexRow ParseRow(IElement rowHtml)
+        public async Task<DexRow> ParseRow(IElement rowHtml)
         {
             var row = new DexRow();
 
@@ -49,6 +52,11 @@ namespace WebScraper.Parsers
                 row.TxnHash = ParseTransactionHash(rowHtml);
                 row.TxnDate = ParseDate(rowHtml);
                 row.Action = ParseAction(rowHtml);
+
+                var txnDetails = await _etherscanApiServices.GetTransactionDetailsAsync(row.TxnHash);
+
+                row.SellerHash = txnDetails.From;
+                row.BuyerHash = txnDetails.To;
             }
             catch(Exception e)
             {
