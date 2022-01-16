@@ -96,8 +96,7 @@ namespace WebScraper
                         State.ExitAndLog(new StackTrace());
                         break;
                     case "Max rate limit reached":
-                        Task.Delay(_apiTryAgainDelay).Wait();
-                        result = MakeRequestsUntilGet(client, txnHash).Result;
+                        result = HandleRequestLimitReached(client, txnHash);
                         break;
                     default:
                         Console.WriteLine($"Unexpected API fail response: \"{failReason}\"");
@@ -110,6 +109,15 @@ namespace WebScraper
                 State.ExitAndLog(new StackTrace());
             }
 
+            return result;
+        }
+
+        private TransactionDetails HandleRequestLimitReached(HttpClient client, string txnHash)
+        {
+            Task.Delay(_apiTryAgainDelay).Wait();
+            var result = MakeRequestsUntilGet(client, txnHash).Result;
+            _apiCallsLeft = _apiCallsAllowedPerSecond - 2; // just for safety since we don't know how long ti took for api to respond
+            _msSinceApiLimitStarted.Restart();
             return result;
         }
 
