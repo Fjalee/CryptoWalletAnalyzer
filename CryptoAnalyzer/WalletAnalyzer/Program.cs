@@ -21,9 +21,12 @@ namespace WalletAnalyzer
             var dexCollector = serviceProvider.GetService<IDexCollector>();
             var config = serviceProvider.GetService<IOptions<AppSettingsOptions>>().Value;
 
-            var url = @"https://etherscan.io/dextracker_txns?q=0x6b3595068778dd592e39a122f4f5a5cf09c90fe2&ps=100";
             var sleepTimeMs = config.Blockchains.Etherscan.SleepTimeBetweenScrapesInMs;
             var appendPeriodInMs = config.Output.AppendPeriodInSeconds;
+
+            var configEtherscan = config.Blockchains.Etherscan;
+            var configDexUrl = configEtherscan.DexTable.Url;
+            var url = $"{configEtherscan.DomainName}/{configDexUrl.Path}&{configDexUrl.TokenVarName}={configEtherscan.HashesTokensToScrape[0]}";
 
             await dexCollector.Start(url, sleepTimeMs, appendPeriodInMs);
         }

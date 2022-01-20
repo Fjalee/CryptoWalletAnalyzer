@@ -1,5 +1,16 @@
 ﻿namespace WebScraper
 {
+    public class DexTableUrlOptions
+    {
+        public string Path { get; set; }
+        public string TokenVarName { get; set; }
+    }
+
+    public class DexTableOptions
+    {
+        public DexTableUrlOptions Url { get; set; }
+    }
+
     public class AppSettingsOptions
     {
         public OutputOptions Output { get; set; }
@@ -15,7 +26,9 @@
     {
         public string DomainName { get; set; }
         public ApiOptions Api { get; set; }
+        public DexTableOptions DexTable { get; set; }
         public int SleepTimeBetweenScrapesInMs { get; set; }
+        public string[] HashesTokensToScrape { get; set; }
     }   
 
     public class ApiOptions
