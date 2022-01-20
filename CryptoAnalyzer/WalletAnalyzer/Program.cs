@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
+using Microsoft.Extensions.Options;
 using System.IO;
 using System.Threading.Tasks;
 using WalletAnalyzer.TemporaryTesting;
@@ -19,20 +19,27 @@ namespace WalletAnalyzer
             var serviceProvider = services.BuildServiceProvider();
 
             var dexCollector = serviceProvider.GetService<IDexCollector>();
-            var config = serviceProvider.GetService<IConfiguration>();
+            var config = serviceProvider.GetService<IOptions<AppSettingsOptions>>().Value;
 
             var url = @"https://etherscan.io/dextracker_txns?q=0x6b3595068778dd592e39a122f4f5a5cf09c90fe2&ps=100";
-            var sleepTimeMs = Int32.Parse(config.GetSection("APP-SETTINGS")["SLEEP-TIME-IN-MILISECONDS"]);
-            var appendPeriodInMs = Int32.Parse(config.GetSection("APP-SETTINGS").GetSection("OUTPUT")["APPEND-PERIOD-IN-SECONDS"]);
+            var sleepTimeMs = config.Blockchains.Etherscan.SleepTimeBetweenScrapesInMs;
+            var appendPeriodInMs = config.Output.AppendPeriodInSeconds;
 
             await dexCollector.Start(url, sleepTimeMs, appendPeriodInMs);
         }
 
         private static void ConfigureServices(IServiceCollection services)
         {
+            var config = SetupConfiguration();
+
             services
-                .AddSingleton<IConfiguration>(SetupConfiguration())
-                .AddAutoMapper(typeof(Program));
+                .AddAutoMapper(typeof(Program))
+                .Configure<AppSettingsOptions>(
+                    config.GetSection("AppSettings"))
+                .Configure<ApiOptions>(
+                    config.GetSection("AppSettings").GetSection("Blockchains").GetSection("Etherscan").GetSection("Api"))
+                .Configure<OutputOptions>(
+                    config.GetSection("AppSettings").GetSection("Output"));
 
             services
                 .AddTransient<IDexOutput, DexCsvOutput>()
@@ -49,8 +56,8 @@ namespace WalletAnalyzer
         private static IConfiguration SetupConfiguration()
         {
             return new ConfigurationBuilder()
-                .AddJsonFile($"appsettings.json", false)
                 .AddJsonFile($"apikeys.json", false)
+                .AddJsonFile($"appsettings.json", false)
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .Build();
         }

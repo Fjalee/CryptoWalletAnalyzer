@@ -1,6 +1,7 @@
 ﻿using CryptoAnalyzer;
 using CsvHelper;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -12,16 +13,16 @@ namespace WalletAnalyzer
 {
     public class DexCsvOutput : IDexOutput
     {
-        private readonly IConfiguration _config;
+        private readonly OutputOptions _config;
 
-        public DexCsvOutput(IConfiguration config)
+        public DexCsvOutput(IOptions<OutputOptions> config)
         {
-            _config = config;
+            _config = config.Value;
         }
 
         public void DoOutput(string outputName, List<DexOutputDto> list, string timeElapsed, int nmRows)
         {
-            var pathName = _config.GetSection("APP-SETTINGS").GetSection("OUTPUT")["PATH"];
+            var pathName = _config.Path;
             var fullPath = pathName + '/' + outputName + ".csv";
 
             Directory.CreateDirectory(pathName);

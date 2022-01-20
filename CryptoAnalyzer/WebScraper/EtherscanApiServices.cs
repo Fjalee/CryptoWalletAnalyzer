@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
@@ -11,35 +12,18 @@ namespace WebScraper
     public class EtherscanApiServices : IEtherscanApiServices
     {
         private readonly Uri _baseUri;
-        private readonly string _apiKey;
 
         const int _secondToMs = 1000;
-        private readonly int _apiCallsAllowedPerSecond;
-        private readonly int _apiTryAgainDelay;
         private int _apiCallsLeft;
         private readonly Stopwatch _msSinceApiLimitStarted = new Stopwatch();
+        private readonly ApiOptions _config;
 
-        public EtherscanApiServices(IConfiguration config)
+        public EtherscanApiServices(IOptions<ApiOptions> config)
         {
-            var apiUrl = config.GetSection("APP-SETTINGS").GetSection("BLOCKCHAINS").GetSection("ETHERSCAN").GetSection("API")["PATH"];
-            _apiKey = config.GetSection("API-KEYS")["ETHERSCAN"];
-            _baseUri = new Uri(apiUrl);
+            _config = config.Value;
+            _baseUri = new Uri(_config.Path);
 
-            try
-            {
-                _apiCallsAllowedPerSecond = config
-                    .GetSection("BLOCKCHAINS").GetSection("ETHERSCAN").GetSection("API").GetSection("CALLS-PER-SECOND")
-                    .Get<Int32>();
-                _apiTryAgainDelay = config
-                    .GetSection("BLOCKCHAINS").GetSection("ETHERSCAN").GetSection("API").GetSection("TRY-AGAIN-DELAY-IN-MS")
-                    .Get<Int32>();
-            }
-            catch
-            {
-                State.ExitAndLog(new StackTrace());
-            }
-
-            _apiCallsLeft = _apiCallsAllowedPerSecond;
+            _apiCallsLeft = _config.CallsPerSecond;
             _msSinceApiLimitStarted.Start();
         }
 
@@ -64,7 +48,7 @@ namespace WebScraper
 
         private async Task<string> GetJsonResponse(HttpClient client, string txnHash)
         {
-            var parameters = $"?module=proxy&action=eth_getTransactionByHash&txhash={txnHash}&apikey={_apiKey}";
+            var parameters = $"?module=proxy&action=eth_getTransactionByHash&txhash={txnHash}&apikey={_config.ApiKey}";
             var response = await client.GetAsync(parameters);
             if (!response.IsSuccessStatusCode)
             {
@@ -111,9 +95,9 @@ namespace WebScraper
 
         private TransactionDetails HandleRequestLimitReached(HttpClient client, string txnHash)
         {
-            Task.Delay(_apiTryAgainDelay).Wait();
+            Task.Delay(_config.TryAgainDelayInMs).Wait();
             var result = MakeRequestsUntilGet(client, txnHash).Result;
-            _apiCallsLeft = _apiCallsAllowedPerSecond - 2; // just for safety since we don't know how long ti took for api to respond
+            _apiCallsLeft = _config.CallsPerSecond - 2; // just for safety since we don't know how long ti took for api to respond
             _msSinceApiLimitStarted.Restart();
             return result;
         }
@@ -126,7 +110,7 @@ namespace WebScraper
                 msToWait = msToWait < 0 ? 0 : msToWait;
                 Task.Delay(msToWait).Wait();
 
-                _apiCallsLeft = _apiCallsAllowedPerSecond;
+                _apiCallsLeft = _config.CallsPerSecond;
                 _msSinceApiLimitStarted.Restart();
             }
         }
