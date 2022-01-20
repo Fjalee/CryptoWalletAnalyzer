@@ -22,8 +22,8 @@ namespace WebScraper
         public EtherscanApiServices(IConfiguration config)
         {
             var apiUrl = config.GetSection("BLOCKCHAINS").GetSection("ETHERSCAN").GetSection("API")["PATH"];
+            _apiKey = config.GetSection("API-KEYS")["ETHERSCAN"];
             _baseUri = new Uri(apiUrl);
-            _apiKey = "api_key"; // fix, this should be kept as github secret
 
             try
             {
