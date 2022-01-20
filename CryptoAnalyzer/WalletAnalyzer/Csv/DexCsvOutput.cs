@@ -21,7 +21,7 @@ namespace WalletAnalyzer
 
         public void DoOutput(string outputName, List<DexOutputDto> list, string timeElapsed, int nmRows)
         {
-            var pathName = _config.GetSection("OUTPUT")["PATH"];
+            var pathName = _config.GetSection("APP-SETTINGS").GetSection("OUTPUT")["PATH"];
             var fullPath = pathName + '/' + outputName + ".csv";
 
             Directory.CreateDirectory(pathName);

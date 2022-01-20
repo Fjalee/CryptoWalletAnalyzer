@@ -22,8 +22,8 @@ namespace WalletAnalyzer
             var config = serviceProvider.GetService<IConfiguration>();
 
             var url = @"https://etherscan.io/dextracker_txns?q=0x6b3595068778dd592e39a122f4f5a5cf09c90fe2&ps=100";
-            var sleepTimeMs = Int32.Parse(config["SLEEP-TIME-IN-MILISECONDS"]);
-            var appendPeriodInMs = Int32.Parse(config.GetSection("OUTPUT")["APPEND-PERIOD-IN-SECONDS"]);
+            var sleepTimeMs = Int32.Parse(config.GetSection("APP-SETTINGS")["SLEEP-TIME-IN-MILISECONDS"]);
+            var appendPeriodInMs = Int32.Parse(config.GetSection("APP-SETTINGS").GetSection("OUTPUT")["APPEND-PERIOD-IN-SECONDS"]);
 
             await dexCollector.Start(url, sleepTimeMs, appendPeriodInMs);
         }
@@ -42,13 +42,15 @@ namespace WalletAnalyzer
                 .AddTransient<IDexTableParser, EtherscanDexParser>()
                 .AddTransient<IDexScraper, EtherscanDexScraper>()
                 .AddTransient<IDexCollector, DexCollector>()
-                .AddTransient<IDexScraperFactory, DexScraperFactory>();
+                .AddTransient<IDexScraperFactory, DexScraperFactory>()
+                .AddSingleton<IEtherscanApiServices, EtherscanApiServices>();
         }
 
         private static IConfiguration SetupConfiguration()
         {
             return new ConfigurationBuilder()
                 .AddJsonFile($"appsettings.json", false)
+                .AddJsonFile($"apikeys.json", false)
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .Build();
         }

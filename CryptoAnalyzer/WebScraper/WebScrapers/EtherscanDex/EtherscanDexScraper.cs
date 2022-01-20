@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using WebScraper.Parsers;
 
@@ -30,11 +31,20 @@ namespace WebScraper.WebScrapers
 
             var table = _dexParser.GetTable(page);
 
-            var allRows = new List<DexRow>();
+            var allRowTasks = new List<Task<DexRow>>();
             foreach (var row in table.Children)
             {
-                var newRows = _dexParser.ParseRow(row);
-                allRows.Add(newRows);
+                var task = _dexParser.ParseRow(row);
+                allRowTasks.Add(task);
+            }
+
+            var allRows = new List<DexRow>();
+            while (allRowTasks.Count > 0)
+            {
+                var completedTask = await Task.WhenAny(allRowTasks);
+                var row = await completedTask;
+                allRows.Add(row);
+                allRowTasks.Remove(completedTask);
             }
 
             return allRows;
