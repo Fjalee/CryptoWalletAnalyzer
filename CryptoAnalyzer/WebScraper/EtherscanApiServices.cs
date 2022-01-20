@@ -18,12 +18,9 @@ namespace WebScraper
         private readonly int _apiTryAgainDelay;
         private int _apiCallsLeft;
         private readonly Stopwatch _msSinceApiLimitStarted = new Stopwatch();
-        private readonly Stopwatch _tempSw = new Stopwatch();
 
         public EtherscanApiServices(IConfiguration config)
         {
-            _tempSw.Start();
-
             var apiUrl = config.GetSection("BLOCKCHAINS").GetSection("ETHERSCAN").GetSection("API")["PATH"];
             _baseUri = new Uri(apiUrl);
             _apiKey = "api_key"; // fix, this should be kept as github secret
