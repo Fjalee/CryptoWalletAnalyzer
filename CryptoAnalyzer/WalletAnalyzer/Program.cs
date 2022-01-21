@@ -18,7 +18,6 @@ namespace WalletAnalyzer
             ConfigureServices(services);
             var serviceProvider = services.BuildServiceProvider();
 
-            var dexCollector = serviceProvider.GetService<IDexCollector>();
             var config = serviceProvider.GetService<IOptions<AppSettingsOptions>>().Value;
 
             var sleepTimeMs = config.Blockchains.Etherscan.SleepTimeBetweenScrapesInMs;
@@ -28,6 +27,7 @@ namespace WalletAnalyzer
 
             foreach (var token in config.Blockchains.Etherscan.TokensToScrape)
             {
+                var dexCollector = serviceProvider.GetService<IDexCollector>();
                 var url = $"{configEtherscan.DomainName}/{configDexUrl.Path}&{configDexUrl.TokenVarName}={token.Hash}";
                 await dexCollector.Start(url, sleepTimeMs, appendPeriodInMs, token.RowsAmount);
             }
