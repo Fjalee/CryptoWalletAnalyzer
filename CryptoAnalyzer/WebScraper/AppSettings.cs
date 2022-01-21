@@ -6,6 +6,12 @@
         public string TokenVarName { get; set; }
     }
 
+    public class TokenToScrape
+    {
+        public string Hash { get; set; }
+        public int RowsAmount { get; set; }
+    }
+
     public class DexTableOptions
     {
         public DexTableUrlOptions Url { get; set; }
@@ -28,7 +34,7 @@
         public ApiOptions Api { get; set; }
         public DexTableOptions DexTable { get; set; }
         public int SleepTimeBetweenScrapesInMs { get; set; }
-        public string[] HashesTokensToScrape { get; set; }
+        public TokenToScrape[] TokensToScrape { get; set; }
     }   
 
     public class ApiOptions

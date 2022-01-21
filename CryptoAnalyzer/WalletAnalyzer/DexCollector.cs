@@ -31,7 +31,7 @@ namespace WalletAnalyzer
             _mapper = mapper;
         }
 
-        public async Task Start(string url, int sleepTimeMs, int appendPeriodInMs)
+        public async Task Start(string url, int sleepTimeMs, int appendPeriodInMs, int nmRowsToScrape)
         {
             _scrapeStartDate = DateTime.Now.ToString("yyyy_MM_dd_HHmm");
             var dexScrapper = _dexScrapperFactory.CreateScrapper(url);
@@ -40,7 +40,7 @@ namespace WalletAnalyzer
             //fix
 
             _stopwatch.Start();
-            while (true)
+            while(_totalRowsScraped < nmRowsToScrape)
             {
                 var pageRows = await dexScrapper.ScrapeCurrentPageTable();
                 _allNewRows.AddRange(pageRows);

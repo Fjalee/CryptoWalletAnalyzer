@@ -26,10 +26,10 @@ namespace WalletAnalyzer
             var configEtherscan = config.Blockchains.Etherscan;
             var configDexUrl = configEtherscan.DexTable.Url;
 
-            foreach (var tokenHash in config.Blockchains.Etherscan.HashesTokensToScrape)
+            foreach (var token in config.Blockchains.Etherscan.TokensToScrape)
             {
-                var url = $"{configEtherscan.DomainName}/{configDexUrl.Path}&{configDexUrl.TokenVarName}={tokenHash}";
-                await dexCollector.Start(url, sleepTimeMs, appendPeriodInMs);
+                var url = $"{configEtherscan.DomainName}/{configDexUrl.Path}&{configDexUrl.TokenVarName}={token.Hash}";
+                await dexCollector.Start(url, sleepTimeMs, appendPeriodInMs, token.RowsAmount);
             }
         }
 
