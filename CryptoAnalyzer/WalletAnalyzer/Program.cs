@@ -23,12 +23,14 @@ namespace WalletAnalyzer
 
             var sleepTimeMs = config.Blockchains.Etherscan.SleepTimeBetweenScrapesInMs;
             var appendPeriodInMs = config.Output.AppendPeriodInSeconds;
-
             var configEtherscan = config.Blockchains.Etherscan;
             var configDexUrl = configEtherscan.DexTable.Url;
-            var url = $"{configEtherscan.DomainName}/{configDexUrl.Path}&{configDexUrl.TokenVarName}={configEtherscan.HashesTokensToScrape[0]}";
 
-            await dexCollector.Start(url, sleepTimeMs, appendPeriodInMs);
+            foreach (var tokenHash in config.Blockchains.Etherscan.HashesTokensToScrape)
+            {
+                var url = $"{configEtherscan.DomainName}/{configDexUrl.Path}&{configDexUrl.TokenVarName}={tokenHash}";
+                await dexCollector.Start(url, sleepTimeMs, appendPeriodInMs);
+            }
         }
 
         private static void ConfigureServices(IServiceCollection services)
