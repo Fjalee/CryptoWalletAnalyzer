@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using CryptoAnalyzer;
 using WebScraper.WebScrapers;
 
 namespace WalletAnalyzer
@@ -8,7 +7,8 @@ namespace WalletAnalyzer
     {
         public AutoMapping()
         {
-            CreateMap<DexRow, DexOutputDto>();
+            CreateMap<DexRow, DexRowOutputDto>();
+            CreateMap<DexTable, DexTableOutputDto>();
         }
     }
 }

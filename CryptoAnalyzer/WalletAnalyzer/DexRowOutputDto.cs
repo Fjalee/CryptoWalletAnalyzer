@@ -2,9 +2,9 @@
 using WebScraper.Parsers;
 using WebScraper.WebScrapers.EtherscanDex;
 
-namespace CryptoAnalyzer
+namespace WalletAnalyzer
 {
-    public class DexOutputDto : IRow
+    public class DexRowOutputDto : IRow
     {
         public string TxnHash { get; set; }
         public DateTime TxnDate { get; set; }

@@ -1,5 +1,4 @@
-﻿using CryptoAnalyzer;
-using CsvHelper;
+﻿using CsvHelper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
@@ -20,7 +19,7 @@ namespace WalletAnalyzer
             _config = config.Value;
         }
 
-        public void DoOutput(string outputName, List<DexOutputDto> list, string timeElapsed, int nmRows)
+        public void DoOutput(string outputName, DexTableOutputDto table, string timeElapsed, int nmRows)
         {
             var pathName = _config.Path;
             var fullPath = pathName + '/' + outputName + ".csv";
@@ -34,15 +33,19 @@ namespace WalletAnalyzer
                 {
                     csv.WriteField("sep=,");
                     csv.NextRecord();
-                    csv.Context.RegisterClassMap<DexOutputDtoMap>();
+                    csv.Context.RegisterClassMap<DexRowOutputDtoMap>();
                     csv.WriteField("Time elapsed: ");
                     csv.WriteField(timeElapsed);
                     csv.WriteField("");
                     csv.WriteField("Rows scraped: ");
                     csv.WriteField(nmRows);
                     csv.NextRecord();
+                    csv.WriteField("Token Name: ");
+                    csv.WriteField(table.TokenName);
+                    csv.WriteField("");
                     csv.NextRecord();
-                    csv.WriteRecords(list);
+                    csv.NextRecord();
+                    csv.WriteRecords(table.Rows);
                 }
             }
             catch (IOException)
