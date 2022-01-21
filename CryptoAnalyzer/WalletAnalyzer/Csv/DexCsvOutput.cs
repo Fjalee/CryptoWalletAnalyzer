@@ -29,25 +29,15 @@ namespace WalletAnalyzer
             try
             {
                 using (var writer = new StreamWriter(fullPath))
-                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
                 {
-                    csv.WriteField("sep=,");
-                    csv.NextRecord();
-                    csv.Context.RegisterClassMap<DexRowOutputDtoMap>();
-                    csv.WriteField("Time elapsed: ");
-                    csv.WriteField(timeElapsed);
-                    csv.WriteField("");
-                    csv.WriteField("Rows scraped: ");
-                    csv.WriteField(nmRows);
-                    csv.NextRecord();
-                    csv.WriteField("Token Name: ");
-                    csv.WriteField(table.TokenName);
-                    csv.WriteField("");
-                    csv.WriteField("Token Hash: ");
-                    csv.WriteField(tokenHash);
-                    csv.NextRecord();
-                    csv.NextRecord();
-                    csv.WriteRecords(table.Rows);
+                    WriteCsvOptions(csvWriter);
+                    WriteScrapeInfo(csvWriter, timeElapsed, nmRows);
+                    WriteTokenInfo(csvWriter, table.TokenName, tokenHash);
+
+                    csvWriter.NextRecord();
+                    csvWriter.Context.RegisterClassMap<DexRowOutputDtoMap>();
+                    csvWriter.WriteRecords(table.Rows);
                 }
             }
             catch (IOException)
@@ -58,6 +48,32 @@ namespace WalletAnalyzer
             {
                 State.ExitAndLog(new StackTrace());
             }
+        }
+
+        private void WriteCsvOptions(CsvWriter csvWriter)
+        {
+            csvWriter.WriteField("sep=,");
+            csvWriter.NextRecord();
+        }
+
+        private void WriteScrapeInfo(CsvWriter csvWriter, string timeElapsed, int nmRows)
+        {
+            csvWriter.WriteField("Time elapsed: ");
+            csvWriter.WriteField(timeElapsed);
+            csvWriter.WriteField("");
+            csvWriter.WriteField("Rows scraped: ");
+            csvWriter.WriteField(nmRows);
+            csvWriter.NextRecord();
+        }
+
+        private void WriteTokenInfo(CsvWriter csvWriter, string tokenName, string tokenHash)
+        {
+            csvWriter.WriteField("Token Name: ");
+            csvWriter.WriteField(tokenName);
+            csvWriter.WriteField("");
+            csvWriter.WriteField("Token Hash: ");
+            csvWriter.WriteField(tokenHash);
+            csvWriter.NextRecord();
         }
     }
 }
