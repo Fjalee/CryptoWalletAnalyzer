@@ -14,8 +14,8 @@ namespace WalletAnalyzer
         private readonly IDexScraperFactory _dexScrapperFactory;
         private readonly IDexOutput _dexOutput;
         private readonly IMapper _mapper;
-        private List<DexRow> _allNewRows = new List<DexRow>();
-        private List<DexRow> _allOutputHistory = new List<DexRow>();
+        private readonly List<DexRow> _allNewRows = new List<DexRow>();
+        private readonly List<DexRow> _allOutputHistory = new List<DexRow>();
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
         private int _totalRowsScraped = 0;
