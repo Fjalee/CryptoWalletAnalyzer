@@ -38,6 +38,11 @@ namespace WebScraper.Parsers
             return current;
         }
 
+        public bool IsNoMorePages(IHtmlDocument page)
+        {
+            return page.Title == "Etherscan Error Page";
+        }
+
         public async Task<DexRow> ParseRow(IElement rowHtml)
         {
             var row = new DexRow();
