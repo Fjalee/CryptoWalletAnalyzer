@@ -1,11 +1,11 @@
 ﻿using CsvHelper.Configuration;
 using System.Globalization;
 
-namespace CryptoAnalyzer
+namespace WalletAnalyzer
 {
-    public class DexOutputDtoMap : ClassMap<DexOutputDto>
+    public class DexRowOutputDtoMap : ClassMap<DexRowOutputDto>
     {
-        public DexOutputDtoMap()
+        public DexRowOutputDtoMap()
         {
             //var numSpec = "0." + new string('#', 339);
             //var floatNumSpec = "F4";

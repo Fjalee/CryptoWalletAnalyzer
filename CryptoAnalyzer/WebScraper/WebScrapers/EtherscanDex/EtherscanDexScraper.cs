@@ -23,13 +23,15 @@ namespace WebScraper.WebScrapers
             _url = url;
         }
 
-        public async Task<List<DexRow>> ScrapeCurrentPageTable()
+        public async Task<DexTable> ScrapeCurrentPageTable()
         {
             var currentPageUrl = $"{_url}&p={_currentPageNumber}";
             var page = await _webScraper.GetPage(currentPageUrl);
             State.CurrentScrapingPageHtml = page;
 
             var table = _dexParser.GetTable(page);
+
+            var tokenNameTask = _dexParser.ParseTokenName(table);
 
             var allRowTasks = new List<Task<DexRow>>();
             foreach (var row in table.Children)
@@ -47,7 +49,11 @@ namespace WebScraper.WebScrapers
                 allRowTasks.Remove(completedTask);
             }
 
-            return allRows;
+            return new DexTable
+            {
+                TokenName = await tokenNameTask,
+                Rows = allRows
+            };
         }
 
         public void GoToNextPage()

@@ -4,6 +4,6 @@ namespace WalletAnalyzer
 {
     public interface IDexCollector
     {
-        Task Start(string url, int sleepTimeMs, int appendPeriodInMs);
+        Task Start(string url, string tokenHash, int sleepTimeMs, int appendPeriodInMs, int nmRowsToScrape);
     }
 }

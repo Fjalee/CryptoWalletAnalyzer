@@ -1,10 +1,7 @@
-﻿using CryptoAnalyzer;
-using System.Collections.Generic;
-
-namespace WalletAnalyzer
+﻿namespace WalletAnalyzer
 {
     public interface IDexOutput
     {
-        public void DoOutput(string outputName, List<DexOutputDto> list, string timeElapsed, int nmRows);
+        public void DoOutput(string outputName, string tokenHash, DexTableOutputDto table, string timeElapsed, int nmRows);
     }
 }

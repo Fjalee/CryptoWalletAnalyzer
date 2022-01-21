@@ -18,14 +18,19 @@ namespace WalletAnalyzer
             ConfigureServices(services);
             var serviceProvider = services.BuildServiceProvider();
 
-            var dexCollector = serviceProvider.GetService<IDexCollector>();
             var config = serviceProvider.GetService<IOptions<AppSettingsOptions>>().Value;
 
-            var url = @"https://etherscan.io/dextracker_txns?q=0x6b3595068778dd592e39a122f4f5a5cf09c90fe2&ps=100";
             var sleepTimeMs = config.Blockchains.Etherscan.SleepTimeBetweenScrapesInMs;
             var appendPeriodInMs = config.Output.AppendPeriodInSeconds;
+            var configEtherscan = config.Blockchains.Etherscan;
+            var configDexUrl = configEtherscan.DexTable.Url;
 
-            await dexCollector.Start(url, sleepTimeMs, appendPeriodInMs);
+            foreach (var token in config.Blockchains.Etherscan.TokensToScrape)
+            {
+                var dexCollector = serviceProvider.GetService<IDexCollector>();
+                var url = $"{configEtherscan.DomainName}/{configDexUrl.Path}&{configDexUrl.TokenVarName}={token.Hash}";
+                await dexCollector.Start(url, token.Hash, sleepTimeMs, appendPeriodInMs, token.RowsAmount);
+            }
         }
 
         private static void ConfigureServices(IServiceCollection services)

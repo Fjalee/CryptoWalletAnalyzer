@@ -9,5 +9,6 @@ namespace WebScraper.Parsers
     {
         IElement GetTable(IHtmlDocument page);
         Task<DexRow> ParseRow(IElement rowHtml); //fix maybe Parse method shouldnt be async
+        Task<string> ParseTokenName(IElement table);
     }
 }

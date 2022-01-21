@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
-using CryptoAnalyzer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using WebScraper;
 using WebScraper.WebScrapers;
 
 namespace WalletAnalyzer
@@ -14,15 +15,13 @@ namespace WalletAnalyzer
         private readonly IDexScraperFactory _dexScrapperFactory;
         private readonly IDexOutput _dexOutput;
         private readonly IMapper _mapper;
-        private List<DexRow> _allNewRows = new List<DexRow>();
-        private List<DexRow> _allOutputHistory = new List<DexRow>();
+        private readonly List<DexRow> _allNewRows = new List<DexRow>();
+        private readonly DexTable _tableToOutput = new DexTable();
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
         private int _totalRowsScraped = 0;
         private long _msWorthOfDataOutputed = 0;
         private bool _isNeededSaveAsap = false;
-        private string _scrapeStartDate;
-
 
         public DexCollector(IDexScraperFactory dexScraperFactory, IDexOutput dexOutput, IMapper mapper)
         {
@@ -31,36 +30,57 @@ namespace WalletAnalyzer
             _mapper = mapper;
         }
 
-        public async Task Start(string url, int sleepTimeMs, int appendPeriodInMs)
+        public async Task Start(string url, string tokenHash, int sleepTimeMs, int appendPeriodInMs, int nmRowsToScrape)
         {
-            _scrapeStartDate = DateTime.Now.ToString("yyyy_MM_dd_HHmm");
+            var scrapeStartDate = DateTime.Now.ToString("yyyy_MM_dd_HHmm");
             var dexScrapper = _dexScrapperFactory.CreateScrapper(url);
             //Trace.Listeners.Add(new TextWriterTraceListener(ConfigurationManager.AppSettings.Get("LOG_PATH")));
             //Trace.AutoFlush = true;
             //fix
 
             _stopwatch.Start();
-            while (true)
+
+
+            while(_totalRowsScraped < nmRowsToScrape)
             {
-                var pageRows = await dexScrapper.ScrapeCurrentPageTable();
-                _allNewRows.AddRange(pageRows);
-                _totalRowsScraped += pageRows.Count;
+                var pageDexTable = await dexScrapper.ScrapeCurrentPageTable();
+                _allNewRows.AddRange(pageDexTable.Rows);
+                _totalRowsScraped += pageDexTable.Rows.Count;
+
+                ManageTableName(pageDexTable.TokenName);
 
                 Thread.Sleep(sleepTimeMs);
 
                 if (_msWorthOfDataOutputed + appendPeriodInMs < _stopwatch.ElapsedMilliseconds
                     || _isNeededSaveAsap)
                 {
-                    TryOutput();
+                    var outputName = $"{pageDexTable.TokenName}_{scrapeStartDate}";
+                    TryOutput(outputName, tokenHash);
                 }
 
                 dexScrapper.GoToNextPage();
             }
         }
 
-        private void TryOutput()
+        private void ManageTableName(string newTableName)
         {
-            _allOutputHistory.AddRange(_allNewRows);
+
+            if (_tableToOutput.TokenName == null)
+            {
+                _tableToOutput.TokenName = newTableName;
+            }
+            else
+            {
+                if (_tableToOutput.TokenName == newTableName)
+                {
+                    State.ExitAndLog(new StackTrace()); //fix
+                }
+            }
+        }
+
+        private void TryOutput(string outputName, string tokenHash)
+        {
+            _tableToOutput.Rows.AddRange(_allNewRows);
             _allNewRows.Clear();
 
             var ts = _stopwatch.Elapsed;
@@ -68,9 +88,8 @@ namespace WalletAnalyzer
 
             try
             {
-                var output = _mapper.Map<List<DexOutputDto>>(_allOutputHistory);
-                _dexOutput.DoOutput(_scrapeStartDate, output, timeOutput, _totalRowsScraped);
-                //new CsvOutput().WriteFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), State.ScrapeDate, output, timeOutput, totalRowsScraped);
+                var outputTable = _mapper.Map<DexTableOutputDto>(_tableToOutput);
+                _dexOutput.DoOutput(outputName, tokenHash, outputTable, timeOutput, _totalRowsScraped);
                 _msWorthOfDataOutputed = _stopwatch.ElapsedMilliseconds;
 
                 if (_isNeededSaveAsap)
@@ -81,7 +100,7 @@ namespace WalletAnalyzer
 
                 Console.WriteLine("Appended data scraped in " + timeOutput);
             }
-            catch
+            catch(IOException)
             {
                 _isNeededSaveAsap = true;
                 Console.WriteLine("Scraped data could not be added. Please close the output file...");
