@@ -69,7 +69,6 @@ namespace WalletAnalyzer
             {
                 var output = _mapper.Map<List<DexOutputDto>>(_allOutputHistory);
                 _dexOutput.DoOutput(outputName, output, timeOutput, _totalRowsScraped);
-                //new CsvOutput().WriteFile(ConfigurationManager.AppSettings.Get("OUTPUT_PATH"), State.ScrapeDate, output, timeOutput, totalRowsScraped);
                 _msWorthOfDataOutputed = _stopwatch.ElapsedMilliseconds;
 
                 if (_isNeededSaveAsap)
