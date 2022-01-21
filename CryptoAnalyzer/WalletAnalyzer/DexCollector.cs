@@ -30,7 +30,7 @@ namespace WalletAnalyzer
             _mapper = mapper;
         }
 
-        public async Task Start(string url, int sleepTimeMs, int appendPeriodInMs, int nmRowsToScrape)
+        public async Task Start(string url, string tokenHash, int sleepTimeMs, int appendPeriodInMs, int nmRowsToScrape)
         {
             var scrapeStartDate = DateTime.Now.ToString("yyyy_MM_dd_HHmm");
             var dexScrapper = _dexScrapperFactory.CreateScrapper(url);
@@ -55,7 +55,7 @@ namespace WalletAnalyzer
                     || _isNeededSaveAsap)
                 {
                     var outputName = $"{pageDexTable.TokenName}_{scrapeStartDate}";
-                    TryOutput(outputName);
+                    TryOutput(outputName, tokenHash);
                 }
 
                 dexScrapper.GoToNextPage();
@@ -78,7 +78,7 @@ namespace WalletAnalyzer
             }
         }
 
-        private void TryOutput(string outputName)
+        private void TryOutput(string outputName, string tokenHash)
         {
             _tableToOutput.Rows.AddRange(_allNewRows);
             _allNewRows.Clear();
@@ -89,7 +89,7 @@ namespace WalletAnalyzer
             try
             {
                 var outputTable = _mapper.Map<DexTableOutputDto>(_tableToOutput);
-                _dexOutput.DoOutput(outputName, outputTable, timeOutput, _totalRowsScraped);
+                _dexOutput.DoOutput(outputName, tokenHash, outputTable, timeOutput, _totalRowsScraped);
                 _msWorthOfDataOutputed = _stopwatch.ElapsedMilliseconds;
 
                 if (_isNeededSaveAsap)

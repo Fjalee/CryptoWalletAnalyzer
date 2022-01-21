@@ -2,6 +2,6 @@
 {
     public interface IDexOutput
     {
-        public void DoOutput(string outputName, DexTableOutputDto table, string timeElapsed, int nmRows);
+        public void DoOutput(string outputName, string tokenHash, DexTableOutputDto table, string timeElapsed, int nmRows);
     }
 }

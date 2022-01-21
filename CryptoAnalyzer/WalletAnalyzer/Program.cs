@@ -29,7 +29,7 @@ namespace WalletAnalyzer
             {
                 var dexCollector = serviceProvider.GetService<IDexCollector>();
                 var url = $"{configEtherscan.DomainName}/{configDexUrl.Path}&{configDexUrl.TokenVarName}={token.Hash}";
-                await dexCollector.Start(url, sleepTimeMs, appendPeriodInMs, token.RowsAmount);
+                await dexCollector.Start(url, token.Hash, sleepTimeMs, appendPeriodInMs, token.RowsAmount);
             }
         }
 

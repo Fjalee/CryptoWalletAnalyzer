@@ -19,7 +19,7 @@ namespace WalletAnalyzer
             _config = config.Value;
         }
 
-        public void DoOutput(string outputName, DexTableOutputDto table, string timeElapsed, int nmRows)
+        public void DoOutput(string outputName, string tokenHash, DexTableOutputDto table, string timeElapsed, int nmRows)
         {
             var pathName = _config.Path;
             var fullPath = pathName + '/' + outputName + ".csv";
@@ -43,6 +43,8 @@ namespace WalletAnalyzer
                     csv.WriteField("Token Name: ");
                     csv.WriteField(table.TokenName);
                     csv.WriteField("");
+                    csv.WriteField("Token Hash: ");
+                    csv.WriteField(tokenHash);
                     csv.NextRecord();
                     csv.NextRecord();
                     csv.WriteRecords(table.Rows);
