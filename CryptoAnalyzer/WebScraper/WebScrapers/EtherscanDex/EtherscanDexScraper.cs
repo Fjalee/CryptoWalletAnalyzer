@@ -27,6 +27,10 @@ namespace WebScraper.WebScrapers
         {
             var currentPageUrl = $"{_url}&p={_currentPageNumber}";
             var page = await _webScraper.GetPage(currentPageUrl);
+            if(page == null)
+            {
+                return null;
+            }
             State.CurrentScrapingPageHtml = page;
 
             var table = _dexParser.GetTable(page);

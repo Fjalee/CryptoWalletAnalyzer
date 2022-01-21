@@ -34,16 +34,23 @@ namespace WalletAnalyzer
         {
             var scrapeStartDate = DateTime.Now.ToString("yyyy_MM_dd_HHmm");
             var dexScrapper = _dexScrapperFactory.CreateScrapper(url);
+            var outputName = "";
+            var isLastOutputDone = false;
             //Trace.Listeners.Add(new TextWriterTraceListener(ConfigurationManager.AppSettings.Get("LOG_PATH")));
             //Trace.AutoFlush = true;
             //fix
 
             _stopwatch.Start();
 
-
             while(_totalRowsScraped < nmRowsToScrape)
             {
                 var pageDexTable = await dexScrapper.ScrapeCurrentPageTable();
+
+                if(pageDexTable == null)
+                {
+                    break;
+                }
+
                 _allNewRows.AddRange(pageDexTable.Rows);
                 _totalRowsScraped += pageDexTable.Rows.Count;
 
@@ -54,11 +61,16 @@ namespace WalletAnalyzer
                 if (_msWorthOfDataOutputed + appendPeriodInMs < _stopwatch.ElapsedMilliseconds
                     || _isNeededSaveAsap)
                 {
-                    var outputName = $"{pageDexTable.TokenName}_{scrapeStartDate}";
-                    TryOutput(outputName, tokenHash);
+                    outputName = $"{_tableToOutput.TokenName}_{scrapeStartDate}";
+                    isLastOutputDone = TryOutput(outputName, tokenHash);
                 }
 
                 dexScrapper.GoToNextPage();
+            }
+
+            while (!isLastOutputDone)
+            {
+                isLastOutputDone = TryOutput(outputName, tokenHash);
             }
         }
 
@@ -78,7 +90,7 @@ namespace WalletAnalyzer
             }
         }
 
-        private void TryOutput(string outputName, string tokenHash)
+        private bool TryOutput(string outputName, string tokenHash)
         {
             _tableToOutput.Rows.AddRange(_allNewRows);
             _allNewRows.Clear();
@@ -99,11 +111,13 @@ namespace WalletAnalyzer
                 }
 
                 Console.WriteLine("Appended data scraped in " + timeOutput);
+                return true;
             }
             catch(IOException)
             {
                 _isNeededSaveAsap = true;
                 Console.WriteLine("Scraped data could not be added. Please close the output file...");
+                return false;
             }
         }
     }
