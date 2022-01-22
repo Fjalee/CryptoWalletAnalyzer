@@ -83,7 +83,7 @@ namespace WalletAnalyzer
             }
             else
             {
-                if (_tableToOutput.TokenName == newTableName)
+                if (_tableToOutput.TokenName != newTableName)
                 {
                     State.ExitAndLog(new StackTrace()); //fix
                 }
