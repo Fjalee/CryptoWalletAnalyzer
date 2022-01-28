@@ -47,7 +47,7 @@ namespace WalletAnalyzer
                     config.GetSection("AppSettings").GetSection("Output"));
 
             services
-                .AddTransient<IDexOutput, DexCsvOutput>()
+                .AddTransient<IDexOutput, DexGoogleSheetsOutput>()
                 .AddTransient<IParserCommon, ParserCommon>()
                 .AddTransient<IWebScraper, WebScraper.WebScraper>()
                 //.AddTransient<IWebScraper, MockWebScraper>()
@@ -61,7 +61,7 @@ namespace WalletAnalyzer
         private static IConfiguration SetupConfiguration()
         {
             return new ConfigurationBuilder()
-                .AddJsonFile($"apikeys.json", false)
+                .AddJsonFile($"local-appsettings.json", false)
                 .AddJsonFile($"appsettings.json", false)
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .Build();
