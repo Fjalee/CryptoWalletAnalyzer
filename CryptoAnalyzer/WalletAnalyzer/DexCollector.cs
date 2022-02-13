@@ -42,19 +42,19 @@ namespace WalletAnalyzer
 
             _stopwatch.Start();
 
-            while(_totalRowsScraped < nmRowsToScrape)
-            {
-                var pageDexTable = await dexScrapper.ScrapeCurrentPageTable();
+            _tableToOutput.TokenName = await dexScrapper.ScrapeTokenName();
 
-                if(pageDexTable == null)
+            while (_totalRowsScraped < nmRowsToScrape)
+            {
+                var pageDexRows = await dexScrapper.ScrapeCurrentPageTable();
+
+                if(pageDexRows == null)
                 {
                     break;
                 }
 
-                _allNewRows.AddRange(pageDexTable.Rows);
-                _totalRowsScraped += pageDexTable.Rows.Count;
-
-                ManageTableName(pageDexTable.TokenName);
+                _allNewRows.AddRange(pageDexRows);
+                _totalRowsScraped += pageDexRows.Count;
 
                 Thread.Sleep(sleepTimeMs);
 
@@ -71,22 +71,6 @@ namespace WalletAnalyzer
             while (!isLastOutputDone)
             {
                 isLastOutputDone = TryOutput(outputName, tokenHash);
-            }
-        }
-
-        private void ManageTableName(string newTableName)
-        {
-
-            if (_tableToOutput.TokenName == null)
-            {
-                _tableToOutput.TokenName = newTableName;
-            }
-            else
-            {
-                if (_tableToOutput.TokenName != newTableName)
-                {
-                    State.ExitAndLog(new StackTrace()); //fix
-                }
             }
         }
 
