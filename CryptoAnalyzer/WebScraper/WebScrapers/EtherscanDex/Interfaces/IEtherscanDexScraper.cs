@@ -5,7 +5,7 @@ namespace WebScraper.WebScrapers
 {
     public interface IDexScraper
     {
-        Task<List<DexRow>> ScrapeCurrentPageTable();
+        Task<List<DexRow>> ScrapeCurrentPageDexRows();
         void GoToNextPage();
         void Initialize(string url);
         Task<string> ScrapeTokenName(string url);

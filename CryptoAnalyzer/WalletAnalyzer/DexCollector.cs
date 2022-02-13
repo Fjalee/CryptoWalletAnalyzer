@@ -46,7 +46,7 @@ namespace WalletAnalyzer
 
             while (_totalRowsScraped < nmRowsToScrape)
             {
-                var pageDexRows = await dexScrapper.ScrapeCurrentPageTable();
+                var pageDexRows = await dexScrapper.ScrapeCurrentPageDexRows();
 
                 if(pageDexRows == null)
                 {

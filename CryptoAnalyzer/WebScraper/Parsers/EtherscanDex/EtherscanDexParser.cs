@@ -19,7 +19,7 @@ namespace WebScraper.Parsers
             _etherscanApiServices = etherscanApiServices;
         }
 
-        public IElement GetTable(IHtmlDocument page)
+        public IElement GetRows(IHtmlDocument page)
         {
             IElement current = null;
             try

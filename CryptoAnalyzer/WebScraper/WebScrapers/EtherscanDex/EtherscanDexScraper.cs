@@ -29,7 +29,7 @@ namespace WebScraper.WebScrapers
             return _dexParser.ParseTokenName(page);
         }
         
-        public async Task<List<DexRow>> ScrapeCurrentPageTable()
+        public async Task<List<DexRow>> ScrapeCurrentPageDexRows()
         {
             var currentPageUrl = $"{_url}&p={_currentPageNumber}";
             var page = await _webScraper.GetPage(currentPageUrl);
@@ -40,7 +40,7 @@ namespace WebScraper.WebScrapers
                 return null;
             }
 
-            var table = _dexParser.GetTable(page);
+            var table = _dexParser.GetRows(page);
 
             var allRowTasks = new List<Task<DexRow>>();
             foreach (var row in table.Children)
