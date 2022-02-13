@@ -8,6 +8,6 @@ namespace WebScraper.WebScrapers
         Task<List<DexRow>> ScrapeCurrentPageTable();
         void GoToNextPage();
         void Initialize(string url);
-        Task<string> ScrapeTokenName();
+        Task<string> ScrapeTokenName(string url);
     }
 }

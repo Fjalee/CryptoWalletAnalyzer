@@ -30,7 +30,7 @@ namespace WalletAnalyzer
             _mapper = mapper;
         }
 
-        public async Task Start(string url, string tokenHash, int sleepTimeMs, int appendPeriodInMs, int nmRowsToScrape)
+        public async Task Start(string url, string tokenNameUrl, string tokenHash, int sleepTimeMs, int appendPeriodInMs, int nmRowsToScrape)
         {
             var scrapeStartDate = DateTime.Now.ToString("yyyy_MM_dd_HHmm");
             var dexScrapper = _dexScrapperFactory.CreateScrapper(url);
@@ -42,7 +42,7 @@ namespace WalletAnalyzer
 
             _stopwatch.Start();
 
-            _tableToOutput.TokenName = await dexScrapper.ScrapeTokenName();
+            _tableToOutput.TokenName = await dexScrapper.ScrapeTokenName(tokenNameUrl);
 
             while (_totalRowsScraped < nmRowsToScrape)
             {

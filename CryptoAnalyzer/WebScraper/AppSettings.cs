@@ -3,6 +3,7 @@
     public class DexTableUrlOptions
     {
         public string Path { get; set; }
+        public string TokenNamePath { get; set; }
         public string TokenVarName { get; set; }
     }
 

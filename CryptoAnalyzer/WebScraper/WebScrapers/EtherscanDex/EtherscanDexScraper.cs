@@ -23,8 +23,10 @@ namespace WebScraper.WebScrapers
             _url = url;
         }
 
-        public async Task<string> ScrapeTokenName()
+        public async Task<string> ScrapeTokenName(string url)
         {
+            var page = await _webScraper.GetPage(url);
+            return _dexParser.ParseTokenName(page);
         }
         
         public async Task<List<DexRow>> ScrapeCurrentPageTable()
