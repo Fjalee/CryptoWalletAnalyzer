@@ -53,8 +53,9 @@ namespace WebScraper
             var response = await client.GetAsync(parameters);
             if (!response.IsSuccessStatusCode)
             {
-                Console.WriteLine($"From Etherscan API couldn't get transaction {txnHash}\nStatusCode {response.StatusCode}\nStatusCode {response.ReasonPhrase}\nTrying again in {tryAgainSeconds}");
-                Task.Delay(_config.TryAgainDelayInMs.ForCallsPerSecondLimit).Wait();
+                var tryAgainDelay = _config.TryAgainDelayInMs.ForResponseApiUnavailable;
+                Console.WriteLine($"From Etherscan API couldn't get transaction {txnHash}\nStatusCode {response.StatusCode}\nStatusCode {response.ReasonPhrase}\nTrying again in {tryAgainDelay/1000}");
+                Task.Delay(tryAgainDelay).Wait();
                 return await GetJsonResponse(client, txnHash);
             }
             return response.Content.ReadAsStringAsync().Result;
