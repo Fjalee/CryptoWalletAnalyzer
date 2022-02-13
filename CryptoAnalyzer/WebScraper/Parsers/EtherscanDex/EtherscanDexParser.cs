@@ -95,24 +95,6 @@ namespace WebScraper.Parsers
             return result;
         }
 
-        private string ParseSoldTokenName(IElement rowHtml)
-        {
-            return ParseTokenName(rowHtml, 5);
-        }
-
-        private string ParseBoughtTokenName(IElement rowHtml)
-        {
-            return ParseTokenName(rowHtml, 6);
-        }
-
-        private string ParseTokenName(IElement rowHtml, int tokenCellIndex)
-        {
-            var tokenCell = rowHtml.Children[tokenCellIndex];
-
-            _parserCommon.StepIfMatches(ref tokenCell, "text-nowrap", tokenCell.ClassName, tokenCell.Children[0]);
-            return _parserCommon.GetDataIfMatches(tokenCell.InnerHtml, tokenCell.LocalName, "a");
-        }
-
         private DateTime ParseDate(IElement rowHtml)
         {
             var dateRow = rowHtml.Children[2];
