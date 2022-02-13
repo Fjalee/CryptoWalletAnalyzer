@@ -35,14 +35,19 @@
         public DexTableOptions DexTable { get; set; }
         public int SleepTimeBetweenScrapesInMs { get; set; }
         public TokenToScrape[] TokensToScrape { get; set; }
-    }   
+    }
 
     public class ApiOptions
     {
         public string Path { get; set; }
         public int CallsPerSecond { get; set; }
-        public int TryAgainDelayInMs { get; set; }
+        public TryAgainDelays TryAgainDelayInMs { get; set; }
         public string ApiKey { get; set; }
+    }
+    public class TryAgainDelays
+    {
+        public int ForCallsPerSecondLimit { get; set; }
+        public int ForResponseApiUnavailable { get; set; }
     }
 
     public class OutputOptions

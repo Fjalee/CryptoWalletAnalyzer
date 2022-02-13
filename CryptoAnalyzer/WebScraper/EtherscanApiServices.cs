@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WebScraper
@@ -52,8 +53,9 @@ namespace WebScraper
             var response = await client.GetAsync(parameters);
             if (!response.IsSuccessStatusCode)
             {
-                Console.WriteLine($"From Etherscan API couldn't get transaction {txnHash}");
-                return null;
+                Console.WriteLine($"From Etherscan API couldn't get transaction {txnHash}\nStatusCode {response.StatusCode}\nStatusCode {response.ReasonPhrase}\nTrying again in {tryAgainSeconds}");
+                Task.Delay(_config.TryAgainDelayInMs.ForCallsPerSecondLimit).Wait();
+                return await GetJsonResponse(client, txnHash);
             }
             return response.Content.ReadAsStringAsync().Result;
         }
@@ -95,9 +97,9 @@ namespace WebScraper
 
         private TransactionDetails HandleRequestLimitReached(HttpClient client, string txnHash)
         {
-            Task.Delay(_config.TryAgainDelayInMs).Wait();
+            Task.Delay(_config.TryAgainDelayInMs.ForCallsPerSecondLimit).Wait();
             var result = MakeRequestsUntilGet(client, txnHash).Result;
-            _apiCallsLeft = _config.CallsPerSecond - 2; // just for safety since we don't know how long ti took for api to respond
+            _apiCallsLeft = _config.CallsPerSecond - 2; // just for safety since we don't know how long it took for api to respond
             _msSinceApiLimitStarted.Restart();
             return result;
         }
