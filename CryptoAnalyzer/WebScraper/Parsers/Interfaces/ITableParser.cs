@@ -7,9 +7,9 @@ namespace WebScraper.Parsers
 {
     public interface IDexTableParser
     {
-        IElement GetTable(IHtmlDocument page);
+        IElement GetRows(IHtmlDocument page);
         Task<DexRow> ParseRow(IElement rowHtml); //fix maybe Parse method shouldnt be async
-        Task<string> ParseTokenName(IElement table);
+        string ParseTokenName(IHtmlDocument page);
         bool IsNoMorePages(IHtmlDocument page);
     }
 }

@@ -29,7 +29,8 @@ namespace WalletAnalyzer
             {
                 var dexCollector = serviceProvider.GetService<IDexCollector>();
                 var url = $"{configEtherscan.DomainName}/{configDexUrl.Path}&{configDexUrl.TokenVarName}={token.Hash}";
-                await dexCollector.Start(url, token.Hash, sleepTimeMs, appendPeriodInMs, token.RowsAmount);
+                var tokenNameUrl = $"{configEtherscan.DomainName}/{configDexUrl.TokenNamePath}/{token.Hash}";
+                await dexCollector.Start(url, tokenNameUrl, token.Hash, sleepTimeMs, appendPeriodInMs, token.RowsAmount);
             }
         }
 

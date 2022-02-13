@@ -19,7 +19,7 @@ namespace WebScraper.Parsers
             _etherscanApiServices = etherscanApiServices;
         }
 
-        public IElement GetTable(IHtmlDocument page)
+        public IElement GetRows(IHtmlDocument page)
         {
             IElement current = null;
             try
@@ -71,40 +71,28 @@ namespace WebScraper.Parsers
             return row;
         }
 
-        public async Task<string> ParseTokenName(IElement table)
+        public string ParseTokenName(IHtmlDocument page)
         {
-            foreach (var row in table.Children)
+            IElement current;
+            var result = String.Empty;
+            try
             {
-                var parsedRow = await ParseRow(row);
-                if (parsedRow.Action == DexAction.Buy)
-                {
-                    return ParseBoughtTokenName(row);
-                }
-                if (parsedRow.Action == DexAction.Sell)
-                {
-                    return ParseSoldTokenName(row);
-                }
-                continue;
+                current = page.Body.Children[0];
+                _parserCommon.StepIfMatches(ref current, current.ClassName, "wrapper", current.Children[1]);
+                _parserCommon.StepIfMatches(ref current, current.Id, "content", current.Children[8]);
+                _parserCommon.StepIfMatches(ref current, current.ClassName, "container py-3", current.Children[0]);
+                _parserCommon.StepIfMatches(ref current, current.ClassName, "d-lg-flex align-items-center", current.Children[0]);
+                _parserCommon.StepIfMatches(ref current, current.ClassName, "mb-3 mb-lg-0", current.Children[0]);
+                _parserCommon.StepIfMatches(ref current, current.ClassName, "h4 media align-items-center text-dark", current.Children[2]);
+                _parserCommon.StepIfMatches(ref current, current.ClassName, "media-body", current.Children[0]);
+                result = _parserCommon.GetDataIfMatches(current.TextContent, current.ClassName, "text-secondary small");
             }
-            return null;
-        }
-        
-        private string ParseSoldTokenName(IElement rowHtml)
-        {
-            return ParseTokenName(rowHtml, 5);
-        }
+            catch
+            {
+                State.ExitAndLog(new StackTrace());
+            }
 
-        private string ParseBoughtTokenName(IElement rowHtml)
-        {
-            return ParseTokenName(rowHtml, 6);
-        }
-
-        private string ParseTokenName(IElement rowHtml, int tokenCellIndex)
-        {
-            var tokenCell = rowHtml.Children[tokenCellIndex];
-
-            _parserCommon.StepIfMatches(ref tokenCell, "text-nowrap", tokenCell.ClassName, tokenCell.Children[0]);
-            return _parserCommon.GetDataIfMatches(tokenCell.InnerHtml, tokenCell.LocalName, "a");
+            return result;
         }
 
         private DateTime ParseDate(IElement rowHtml)

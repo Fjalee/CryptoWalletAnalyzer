@@ -30,7 +30,7 @@ namespace WalletAnalyzer
             _mapper = mapper;
         }
 
-        public async Task Start(string url, string tokenHash, int sleepTimeMs, int appendPeriodInMs, int nmRowsToScrape)
+        public async Task Start(string url, string tokenNameUrl, string tokenHash, int sleepTimeMs, int appendPeriodInMs, int nmRowsToScrape)
         {
             var scrapeStartDate = DateTime.Now.ToString("yyyy_MM_dd_HHmm");
             var dexScrapper = _dexScrapperFactory.CreateScrapper(url);
@@ -42,19 +42,19 @@ namespace WalletAnalyzer
 
             _stopwatch.Start();
 
-            while(_totalRowsScraped < nmRowsToScrape)
-            {
-                var pageDexTable = await dexScrapper.ScrapeCurrentPageTable();
+            _tableToOutput.TokenName = await dexScrapper.ScrapeTokenName(tokenNameUrl);
 
-                if(pageDexTable == null)
+            while (_totalRowsScraped < nmRowsToScrape)
+            {
+                var pageDexRows = await dexScrapper.ScrapeCurrentPageDexRows();
+
+                if(pageDexRows == null)
                 {
                     break;
                 }
 
-                _allNewRows.AddRange(pageDexTable.Rows);
-                _totalRowsScraped += pageDexTable.Rows.Count;
-
-                ManageTableName(pageDexTable.TokenName);
+                _allNewRows.AddRange(pageDexRows);
+                _totalRowsScraped += pageDexRows.Count;
 
                 Thread.Sleep(sleepTimeMs);
 
@@ -71,22 +71,6 @@ namespace WalletAnalyzer
             while (!isLastOutputDone)
             {
                 isLastOutputDone = TryOutput(outputName, tokenHash);
-            }
-        }
-
-        private void ManageTableName(string newTableName)
-        {
-
-            if (_tableToOutput.TokenName == null)
-            {
-                _tableToOutput.TokenName = newTableName;
-            }
-            else
-            {
-                if (_tableToOutput.TokenName != newTableName)
-                {
-                    State.ExitAndLog(new StackTrace()); //fix
-                }
             }
         }
 

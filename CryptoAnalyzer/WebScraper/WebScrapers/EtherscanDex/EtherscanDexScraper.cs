@@ -23,7 +23,13 @@ namespace WebScraper.WebScrapers
             _url = url;
         }
 
-        public async Task<DexTable> ScrapeCurrentPageTable()
+        public async Task<string> ScrapeTokenName(string url)
+        {
+            var page = await _webScraper.GetPage(url);
+            return _dexParser.ParseTokenName(page);
+        }
+        
+        public async Task<List<DexRow>> ScrapeCurrentPageDexRows()
         {
             var currentPageUrl = $"{_url}&p={_currentPageNumber}";
             var page = await _webScraper.GetPage(currentPageUrl);
@@ -34,9 +40,7 @@ namespace WebScraper.WebScrapers
                 return null;
             }
 
-            var table = _dexParser.GetTable(page);
-
-            var tokenNameTask = _dexParser.ParseTokenName(table);
+            var table = _dexParser.GetRows(page);
 
             var allRowTasks = new List<Task<DexRow>>();
             foreach (var row in table.Children)
@@ -54,11 +58,7 @@ namespace WebScraper.WebScrapers
                 allRowTasks.Remove(completedTask);
             }
 
-            return new DexTable
-            {
-                TokenName = await tokenNameTask,
-                Rows = allRows
-            };
+            return allRows;
         }
 
         public void GoToNextPage()
