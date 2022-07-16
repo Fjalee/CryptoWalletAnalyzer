@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NLog;
+using NLog.Extensions.Logging;
 using System.IO;
 using System.Threading.Tasks;
 using WalletAnalyzer.TemporaryTesting;
@@ -19,6 +22,10 @@ namespace WalletAnalyzer
             var serviceProvider = services.BuildServiceProvider();
 
             var config = serviceProvider.GetService<IOptions<AppSettingsOptions>>().Value;
+
+            var log = LogManager.GetCurrentClassLogger();
+            log.Debug("test debug");
+            log.Error("test error");
 
             var sleepTimeMs = config.Blockchains.Etherscan.SleepTimeBetweenScrapesInMs;
             var appendPeriodInMs = config.Output.AppendPeriodInSeconds;
@@ -57,6 +64,8 @@ namespace WalletAnalyzer
                 .AddTransient<IDexCollector, DexCollector>()
                 .AddTransient<IDexScraperFactory, DexScraperFactory>()
                 .AddSingleton<IEtherscanApiServices, EtherscanApiServices>();
+
+            LogManager.Configuration = new NLogLoggingConfiguration(config.GetSection("NLog"));
         }
 
         private static IConfiguration SetupConfiguration()
