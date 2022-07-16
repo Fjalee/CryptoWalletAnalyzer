@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,6 +16,7 @@ namespace WalletAnalyzer
         private readonly IDexScraperFactory _dexScrapperFactory;
         private readonly IDexOutput _dexOutput;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
         private readonly List<DexRow> _allNewRows = new List<DexRow>();
         private readonly DexTable _tableToOutput = new DexTable();
         private readonly Stopwatch _stopwatch = new Stopwatch();
@@ -23,11 +25,12 @@ namespace WalletAnalyzer
         private long _msWorthOfDataOutputed = 0;
         private bool _isNeededSaveAsap = false;
 
-        public DexCollector(IDexScraperFactory dexScraperFactory, IDexOutput dexOutput, IMapper mapper)
+        public DexCollector(IDexScraperFactory dexScraperFactory, IDexOutput dexOutput, IMapper mapper, ILogger<DexCollector> logger)
         {
             _dexScrapperFactory = dexScraperFactory;
             _dexOutput = dexOutput;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task Start(string url, string tokenNameUrl, string tokenHash, int sleepTimeMs, int appendPeriodInMs, int nmRowsToScrape)
@@ -91,16 +94,16 @@ namespace WalletAnalyzer
                 if (_isNeededSaveAsap)
                 {
                     _isNeededSaveAsap = false;
-                    Console.WriteLine("Output file closed. Scraped data was added SUCCESSFULLY...");
+                    _logger.LogInformation("Output file closed. Scraped data was added SUCCESSFULLY...");
                 }
 
-                Console.WriteLine("Appended data scraped in " + timeOutput);
+                _logger.LogInformation("Appended data scraped in " + timeOutput);
                 return true;
             }
             catch(IOException)
             {
                 _isNeededSaveAsap = true;
-                Console.WriteLine("Scraped data could not be added. Please close the output file...");
+                _logger.LogInformation("Scraped data could not be added. Please close the output file...");
                 return false;
             }
         }
