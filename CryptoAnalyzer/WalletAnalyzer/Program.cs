@@ -23,10 +23,6 @@ namespace WalletAnalyzer
 
             var config = serviceProvider.GetService<IOptions<AppSettingsOptions>>().Value;
 
-            var log = LogManager.GetCurrentClassLogger();
-            log.Debug("test debug");
-            log.Error("test error");
-
             var sleepTimeMs = config.Blockchains.Etherscan.SleepTimeBetweenScrapesInMs;
             var appendPeriodInMs = config.Output.AppendPeriodInSeconds;
             var configEtherscan = config.Blockchains.Etherscan;
@@ -54,6 +50,13 @@ namespace WalletAnalyzer
                 .Configure<OutputOptions>(
                     config.GetSection("AppSettings").GetSection("Output"));
 
+            services.AddLogging(builder =>
+            {
+                builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                builder.AddNLog("nlog.config");
+            });
+            LogManager.Configuration = new NLogLoggingConfiguration(config.GetSection("NLog"));
+
             services
                 .AddTransient<IDexOutput, DexGoogleSheetsOutput>()
                 .AddTransient<IParserCommon, ParserCommon>()
@@ -64,8 +67,6 @@ namespace WalletAnalyzer
                 .AddTransient<IDexCollector, DexCollector>()
                 .AddTransient<IDexScraperFactory, DexScraperFactory>()
                 .AddSingleton<IEtherscanApiServices, EtherscanApiServices>();
-
-            LogManager.Configuration = new NLogLoggingConfiguration(config.GetSection("NLog"));
         }
 
         private static IConfiguration SetupConfiguration()
