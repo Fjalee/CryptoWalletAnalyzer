@@ -101,15 +101,7 @@ namespace WalletAnalyzer
             var rangeActionArray = XlsxIndirectRange(actionArray);
             var rangeTableFor_txnDate_Action_FromHash = XlsxIndirectRange(tableFor_txnDate_Action_FromHash);
             var formula = $"FILTER({rangeTableFor_txnDate_Action_FromHash}, {rangeActionArray}=\"{sellActionString}\")";
-            try
-            {
-                cell.SetCellFormula(formula);
-            }
-            catch
-            {
-                var t = 0;
-
-            }
+            cell.SetCellFormula(formula);
         }
 
         private void CreateOutputFile(XSSFWorkbook workbook, string path)
@@ -150,8 +142,7 @@ namespace WalletAnalyzer
                 }
                 catch
                 {
-                    System.Console.WriteLine("Error setting formula");
-                    throw; //fix
+                    _logger.LogCritical("Error setting formula.");
                 }
             }
         }

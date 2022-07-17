@@ -79,14 +79,14 @@ namespace WebScraper
                 switch (failReason)
                 {
                     case "Invalid API Key":
-                        Console.WriteLine($"ERROR, API response: \"{failReason}\"");
+                        _logger.LogCritical($"API response: \"{failReason}\"");
                         State.ExitAndLog(new StackTrace(), _logger);
                         break;
                     case "Max rate limit reached":
                         result = HandleRequestLimitReached(client, txnHash);
                         break;
                     default:
-                        Console.WriteLine($"Unexpected API fail response: \"{failReason}\"");
+                        _logger.LogCritical($"Unexpected API fail response: \"{failReason}\"");
                         State.ExitAndLog(new StackTrace(), _logger);
                         break;
                 }
