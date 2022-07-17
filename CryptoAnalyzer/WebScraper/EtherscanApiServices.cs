@@ -21,7 +21,7 @@ namespace WebScraper
         private readonly ApiOptions _config;
         private readonly ILogger _logger;
 
-        public WebsiteApiServices(IOptions<ApiOptions> config, ILogger<EtherscanApiServices> logger)
+        public EtherscanApiServices(IOptions<ApiOptions> config, ILogger<EtherscanApiServices> logger)
         {
             _logger = logger;
             _config = config.Value;
