@@ -13,9 +13,8 @@ namespace WebScraper
         {
             var methodName = stackTrace.GetFrame(0).GetMethod().Name;
             var outerHtml = "";
-
-            logger.LogCritical("\nScrape date: " + ScrapeDate + "\n" +"\nSomething went wrong in method " + methodName +
-                ", OuterHtml will be printed out in the log file.");
+            var logMessage = "\nScrape date: " + ScrapeDate + "\nSomething went wrong in method " + methodName +
+                ", OuterHtml will be printed out in the log file.";
 
             try
             {
@@ -23,10 +22,10 @@ namespace WebScraper
             }
             catch
             {
-                logger.LogCritical("\nCould not get OuterHtml of the page.");
+                logMessage += "\nCould not get OuterHtml of the page.";
             }
 
-            logger.LogCritical("\n" + outerHtml + "\n\n\n");
+            logger.LogCritical(logMessage + "\n" + outerHtml + "\n\n\n");
 
             logger.LogInformation("Press any key to exit...");
             Console.Read();
