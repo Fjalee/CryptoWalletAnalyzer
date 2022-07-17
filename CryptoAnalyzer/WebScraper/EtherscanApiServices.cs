@@ -21,7 +21,7 @@ namespace WebScraper
         private readonly ApiOptions _config;
         private readonly ILogger _logger;
 
-        public EtherscanApiServices(IOptions<ApiOptions> config, ILogger<EtherscanApiServices> logger)
+        public WebsiteApiServices(IOptions<ApiOptions> config, ILogger<EtherscanApiServices> logger)
         {
             _logger = logger;
             _config = config.Value;
@@ -90,10 +90,6 @@ namespace WebScraper
                         State.ExitAndLog(new StackTrace(), _logger);
                         break;
                 }
-            }
-            catch (Exception ex)
-            {
-                State.ExitAndLog(new StackTrace(), _logger);
             }
 
             return result;
