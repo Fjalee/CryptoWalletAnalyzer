@@ -22,7 +22,7 @@ namespace WebScraper
         private readonly ILogger _logger;
 
         public EtherscanApiServices(IOptions<ApiOptions> config, ILogger<EtherscanApiServices> logger)
-         {
+        {
             _logger = logger;
             _config = config.Value;
             _baseUri = new Uri(_config.Path);
