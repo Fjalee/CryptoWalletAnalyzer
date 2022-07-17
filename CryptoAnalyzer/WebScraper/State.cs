@@ -8,13 +8,14 @@ namespace WebScraper
     public static class State
     {
         public static IHtmlDocument CurrentScrapingPageHtml { get; set; }
-        public static string ScrapeDate { get; set; }
         public static void ExitAndLog(StackTrace stackTrace, ILogger logger)
         {
             var methodName = stackTrace.GetFrame(0).GetMethod().Name;
             var outerHtml = "";
-            var logMessage = "\nScrape date: " + ScrapeDate + "\nSomething went wrong in method " + methodName +
+            var logMessage = "\nSomething went wrong in method " + methodName +
                 ", OuterHtml will be printed out in the log file.";
+
+            logger.LogCritical("");
 
             try
             {
