@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.Collections.Generic;
@@ -11,13 +12,15 @@ namespace WalletAnalyzer
 {
     public class DexGoogleSheetsOutput : IDexOutput
     {
+        private readonly ILogger _logger;
         private readonly OutputOptions _config;
         private ICellStyle _dateFormatStyle;
         private readonly string _dateFormatString;
         private readonly int _indexFirstRowForDexTable;
 
-        public DexGoogleSheetsOutput(IOptions<OutputOptions> config)
+        public DexGoogleSheetsOutput(IOptions<OutputOptions> config, ILogger<DexGoogleSheetsOutput> logger)
         {
+            _logger = logger;
             _config = config.Value;
             _dateFormatString = _config.DateFormatForXlsx;
             _indexFirstRowForDexTable = _config.IndexFirstRowDexTable;
@@ -57,8 +60,8 @@ namespace WalletAnalyzer
             }
             catch
             {
-                System.Console.WriteLine("Error outputing xlsx");
-                State.ExitAndLog(new StackTrace()); //fix
+                _logger.LogCritical("Error outputing xlsx");
+                State.ExitAndLog(new StackTrace(), _logger);
             }
         }
 

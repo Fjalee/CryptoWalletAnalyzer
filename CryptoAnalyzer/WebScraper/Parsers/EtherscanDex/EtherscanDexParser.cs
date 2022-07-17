@@ -5,16 +5,19 @@ using System.Diagnostics;
 using System;
 using WebScraper.WebScrapers.EtherscanDex;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace WebScraper.Parsers
 {
     public class EtherscanDexParser : IDexTableParser
     {
+        private readonly ILogger _logger;
         private readonly IParserCommon _parserCommon;
         private readonly IEtherscanApiServices _etherscanApiServices;
 
-        public EtherscanDexParser(IParserCommon parserCommon, IEtherscanApiServices etherscanApiServices)
+        public EtherscanDexParser(IParserCommon parserCommon, IEtherscanApiServices etherscanApiServices, ILogger<EtherscanDexParser> logger)
         {
+            _logger = logger;
             _parserCommon = parserCommon;
             _etherscanApiServices = etherscanApiServices;
         }
@@ -32,7 +35,7 @@ namespace WebScraper.Parsers
             }
             catch
             {
-                State.ExitAndLog(new StackTrace());
+                State.ExitAndLog(new StackTrace(), _logger);
             }
 
             return current;
@@ -51,7 +54,7 @@ namespace WebScraper.Parsers
             {
                 if (10 != rowHtml.Children.Length)
                 {
-                    State.ExitAndLog(new StackTrace());
+                    State.ExitAndLog(new StackTrace(), _logger);
                 }
 
                 row.TxnHash = ParseTransactionHash(rowHtml);
@@ -65,7 +68,7 @@ namespace WebScraper.Parsers
             }
             catch(Exception e)
             {
-                State.ExitAndLog(new StackTrace());
+                State.ExitAndLog(new StackTrace(), _logger);
             }
 
             return row;
@@ -89,7 +92,7 @@ namespace WebScraper.Parsers
             }
             catch
             {
-                State.ExitAndLog(new StackTrace());
+                State.ExitAndLog(new StackTrace(), _logger);
             }
 
             return result;

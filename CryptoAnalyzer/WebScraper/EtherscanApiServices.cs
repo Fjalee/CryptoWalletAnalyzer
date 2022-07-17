@@ -80,20 +80,20 @@ namespace WebScraper
                 {
                     case "Invalid API Key":
                         Console.WriteLine($"ERROR, API response: \"{failReason}\"");
-                        State.ExitAndLog(new StackTrace());
+                        State.ExitAndLog(new StackTrace(), _logger);
                         break;
                     case "Max rate limit reached":
                         result = HandleRequestLimitReached(client, txnHash);
                         break;
                     default:
                         Console.WriteLine($"Unexpected API fail response: \"{failReason}\"");
-                        State.ExitAndLog(new StackTrace());
+                        State.ExitAndLog(new StackTrace(), _logger);
                         break;
                 }
             }
             catch (Exception ex)
             {
-                State.ExitAndLog(new StackTrace());
+                State.ExitAndLog(new StackTrace(), _logger);
             }
 
             return result;
