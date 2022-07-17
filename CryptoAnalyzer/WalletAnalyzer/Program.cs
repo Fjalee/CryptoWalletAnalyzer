@@ -60,8 +60,10 @@ namespace WalletAnalyzer
             services
                 .AddTransient<IDexOutput, DexGoogleSheetsOutput>()
                 .AddTransient<IParserCommon, ParserCommon>()
+
                 .AddTransient<IWebScraper, WebScraper.WebScraper>()
                 //.AddTransient<IWebScraper, MockWebScraper>()
+
                 .AddTransient<IDexTableParser, EtherscanDexParser>()
                 .AddTransient<IDexScraper, EtherscanDexScraper>()
                 .AddTransient<IDexCollector, DexCollector>()
