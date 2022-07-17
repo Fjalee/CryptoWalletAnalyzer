@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NLog;
 using NLog.Extensions.Logging;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using WalletAnalyzer.TemporaryTesting;
@@ -15,11 +16,22 @@ namespace WalletAnalyzer
 {
     public class Program
     {
+        private static ILogger<Program> _logger;
+
+        static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
+        {
+            _logger.LogCritical("Unhandled exception occured\n" + (Exception)e.ExceptionObject);
+            throw new Exception("Global Exception Handler");
+        }
+
         static async Task Main()
         {
+            AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
             var services = new ServiceCollection();
             ConfigureServices(services);
             var serviceProvider = services.BuildServiceProvider();
+
+            _logger = serviceProvider.GetService<ILogger<Program>>();
 
             var config = serviceProvider.GetService<IOptions<AppSettingsOptions>>().Value;
 

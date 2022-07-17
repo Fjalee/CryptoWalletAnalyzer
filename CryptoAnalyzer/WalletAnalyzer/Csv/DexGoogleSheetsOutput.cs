@@ -61,7 +61,7 @@ namespace WalletAnalyzer
             catch
             {
                 _logger.LogCritical("Error outputing xlsx");
-                State.ExitAndLog(new StackTrace(), _logger);
+                //State.ExitAndLog(new StackTrace(), _logger);
             }
         }
 
