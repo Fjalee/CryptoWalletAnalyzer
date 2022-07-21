@@ -25,7 +25,10 @@ namespace WebScraper
             cancellationToken.Dispose();
             httpClient.Dispose();
 
-            return parser.ParseDocument(response);
+            var page = parser.ParseDocument(response);
+            State.CurrentScrapingPageHtml = page;
+
+            return page;
         }
     }
 }

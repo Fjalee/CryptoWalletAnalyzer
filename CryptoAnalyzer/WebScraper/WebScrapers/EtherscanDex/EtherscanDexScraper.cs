@@ -33,7 +33,6 @@ namespace WebScraper.WebScrapers
         {
             var currentPageUrl = $"{_url}&p={_currentPageNumber}";
             var page = await _webScraper.GetPage(currentPageUrl);
-            State.CurrentScrapingPageHtml = page;
 
             if (_dexParser.IsNoMorePages(page))
             {
