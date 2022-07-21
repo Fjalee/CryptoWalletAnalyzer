@@ -12,21 +12,26 @@ namespace WebScraper
         {
             var methodName = stackTrace.GetFrame(0).GetMethod().Name;
             var outerHtml = "";
-            var logMessage = "Something went wrong in method " + methodName +
-                ", OuterHtml will be printed out in the log file.";
 
-            logger.LogCritical("");
+            logger.LogCritical("Something went wrong in method " + methodName +
+                ", OuterHtml will be printed out in the gitlog file.");
 
-            try
+            if(CurrentScrapingPageHtml == null)
             {
-                outerHtml  = CurrentScrapingPageHtml.Children[0].OuterHtml;
+                logger.LogCritical("Did not scrape any page yet.");
             }
-            catch
+            else
             {
-                logMessage += "\nCould not get OuterHtml of the page.";
+                try
+                {
+                    outerHtml = CurrentScrapingPageHtml.Children[0].OuterHtml;
+                }
+                catch
+                {
+                    logger.LogCritical("Could not get OuterHtml of the page.");
+                }
             }
 
-            logger.LogCritical(logMessage);
             logger.LogDebug("\n" + outerHtml + "\n\n\n");
 
             logger.LogInformation("Press any key to exit...");
