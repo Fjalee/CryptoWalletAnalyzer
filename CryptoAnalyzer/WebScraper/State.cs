@@ -1,4 +1,5 @@
 ﻿using AngleSharp.Html.Dom;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 
@@ -7,22 +8,27 @@ namespace WebScraper
     public static class State
     {
         public static IHtmlDocument CurrentScrapingPageHtml { get; set; }
-        public static string ScrapeDate { get; set; }
-        public static void ExitAndLog(StackTrace stackTrace)
+        public static void ExitAndLog(StackTrace stackTrace, ILogger logger)
         {
             var methodName = stackTrace.GetFrame(0).GetMethod().Name;
+            var outerHtml = "";
+            var logMessage = "\nSomething went wrong in method " + methodName +
+                ", OuterHtml will be printed out in the log file.";
+
+            logger.LogCritical("");
 
             try
             {
-                Trace.WriteLine("\nScrape date: " + ScrapeDate + "\n" + CurrentScrapingPageHtml.Children[0].OuterHtml);
-                Console.WriteLine("\nERROR: Something went wrong in method " + methodName + "\nHtml page was printed into the log file...");
+                outerHtml  = CurrentScrapingPageHtml.Children[0].OuterHtml;
             }
             catch
             {
-                Console.WriteLine("\nERROR: Could not get OuterHtml of the page...");
+                logMessage += "\nCould not get OuterHtml of the page.";
             }
 
-            Console.WriteLine("Press any key to exit...");
+            logger.LogCritical(logMessage + "\n" + outerHtml + "\n\n\n");
+
+            logger.LogInformation("Press any key to exit...");
             Console.Read();
             Environment.Exit(0);
         }

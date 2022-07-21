@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
@@ -18,9 +19,11 @@ namespace WebScraper
         private int _apiCallsLeft;
         private readonly Stopwatch _msSinceApiLimitStarted = new Stopwatch();
         private readonly ApiOptions _config;
+        private readonly ILogger _logger;
 
-        public EtherscanApiServices(IOptions<ApiOptions> config)
+        public EtherscanApiServices(IOptions<ApiOptions> config, ILogger<EtherscanApiServices> logger)
         {
+            _logger = logger;
             _config = config.Value;
             _baseUri = new Uri(_config.Path);
 
@@ -54,7 +57,7 @@ namespace WebScraper
             if (!response.IsSuccessStatusCode)
             {
                 var tryAgainDelay = _config.TryAgainDelayInMs.ForResponseApiUnavailable;
-                Console.WriteLine($"From Etherscan API couldn't get transaction {txnHash}\nStatusCode {response.StatusCode}\nStatusCode {response.ReasonPhrase}\nTrying again in {tryAgainDelay/1000}");
+                _logger.LogWarning($"From Etherscan API couldn't get transaction {txnHash}\nStatusCode {response.StatusCode}\nStatusCode {response.ReasonPhrase}\nTrying again in {tryAgainDelay/1000}");
                 Task.Delay(tryAgainDelay).Wait();
                 return await GetJsonResponse(client, txnHash);
             }
@@ -76,21 +79,17 @@ namespace WebScraper
                 switch (failReason)
                 {
                     case "Invalid API Key":
-                        Console.WriteLine($"ERROR, API response: \"{failReason}\"");
-                        State.ExitAndLog(new StackTrace());
+                        _logger.LogCritical($"API response: \"{failReason}\"");
+                        State.ExitAndLog(new StackTrace(), _logger);
                         break;
                     case "Max rate limit reached":
                         result = HandleRequestLimitReached(client, txnHash);
                         break;
                     default:
-                        Console.WriteLine($"Unexpected API fail response: \"{failReason}\"");
-                        State.ExitAndLog(new StackTrace());
+                        _logger.LogCritical($"Unexpected API fail response: \"{failReason}\"");
+                        State.ExitAndLog(new StackTrace(), _logger);
                         break;
                 }
-            }
-            catch (Exception ex)
-            {
-                State.ExitAndLog(new StackTrace());
             }
 
             return result;

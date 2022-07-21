@@ -1,5 +1,6 @@
 ﻿using CsvHelper;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,10 +14,12 @@ namespace WalletAnalyzer
     //GoogleSpreadsheet Formulas doesnt work properly in csv
     public class DexCsvOutput : IDexOutput
     {
+        private readonly ILogger _logger;
         private readonly OutputOptions _config;
 
-        public DexCsvOutput(IOptions<OutputOptions> config)
+        public DexCsvOutput(IOptions<OutputOptions> config, ILogger<DexCsvOutput> logger)
         {
+            _logger = logger;
             _config = config.Value;
         }
 
@@ -50,7 +53,7 @@ namespace WalletAnalyzer
             }
             catch
             {
-                State.ExitAndLog(new StackTrace());
+                State.ExitAndLog(new StackTrace(), _logger);
             }
         }
 
