@@ -6,6 +6,7 @@ using System;
 using WebScraper.WebScrapers.EtherscanDex;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace WebScraper.Parsers
 {
@@ -76,12 +77,16 @@ namespace WebScraper.Parsers
 
         public string ParseTokenName(IHtmlDocument page)
         {
-            IElement current;
-            var result = String.Empty;
+            var result = "";
+            var current = page.All.FirstOrDefault(m => m.HasAttribute("id") &&
+                                 m.GetAttribute("id") == "content");
+            if(current == null)
+            {
+                _logger.LogCritical("Did not find id=\"content\" in the html page");
+                State.ExitAndLog(new StackTrace(), _logger);
+            }
             try
             {
-                current = page.Body.Children[0];
-                _parserCommon.StepIfMatches(ref current, current.ClassName, "wrapper", current.Children[1]);
                 _parserCommon.StepIfMatches(ref current, current.Id, "content", current.Children[8]);
                 _parserCommon.StepIfMatches(ref current, current.ClassName, "container py-3", current.Children[0]);
                 _parserCommon.StepIfMatches(ref current, current.ClassName, "d-lg-flex align-items-center", current.Children[0]);
