@@ -26,6 +26,7 @@ namespace WalletAnalyzer
 
         static async Task Main()
         {
+            Console.WriteLine(AppDomain.CurrentDomain.BaseDirectory);
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
             var services = new ServiceCollection();
             ConfigureServices(services);
